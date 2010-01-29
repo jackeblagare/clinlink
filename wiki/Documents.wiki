@@ -1,4 +1,5 @@
-#summary Relevant documents concerning ClinLink.
 
 
-* Narrative [https://docs.google.com/Doc?docid=0AbwQa7tgqWmiZGM3NWJobjhfMTFnMmM2aGZnOA&hl=en]
+* Narrative/User Story *
+
+[https://docs.google.com/Doc?docid=0AbwQa7tgqWmiZGM3NWJobjhfMTFnMmM2aGZnOA&hl=en]
