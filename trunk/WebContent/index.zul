@@ -13,7 +13,7 @@
 		
 		User u = new User();
 		LoginController lc = new LoginController();
-
+	
 		public void requestLogin(){
 			int usetype = usertype.getSelectedIndex() + 1;
 			status = lc.doLogin(usertb.getValue(),pwdtb.getValue(),usetype);	
@@ -77,8 +77,8 @@
 					</row>
 					<row>
 						User Type:
-						<bandbox id="bd" width="184px" image="usertype.png">
-							<bandpopup>
+						<bandbox id="bd" width="184px" readonly="true">
+							<bandpopup >
 								<listbox id="usertype" width="200px" onSelect="bd.value=self.selectedItem.label; bd.closeDropdown();">
 	
 									<listitem label="Administrator" value="1"/>
@@ -100,7 +100,7 @@
 			</hbox>
 			
 		</div>
-	
 		
 	</window>
+	
 </zk>

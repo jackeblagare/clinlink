@@ -28,7 +28,7 @@ public class LoginController extends GenericForwardComposer{
 		int status=0;
 		
 	
-		if(isValid()==0){
+		if(isValid(user,pwd,usertype)==0){
 			return 3;
 		}
 		
@@ -43,9 +43,9 @@ public class LoginController extends GenericForwardComposer{
 		return status;
 	}
 	
-	public int isValid(){
+	public int isValid(String user,String pwd,int usertype){
 		
-		if(Strings.isBlank(user) || Strings.isEmpty(pwd) || usertype<0){
+		if(Strings.isBlank(user) || Strings.isEmpty(pwd) || usertype<0 ){
 			return 0;
 		}
 		return 1;
