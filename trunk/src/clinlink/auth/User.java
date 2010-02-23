@@ -32,7 +32,7 @@ public class User{
     		
         try{ 
         	
-        	con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","jack","aelendil");
+        	con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
         	st= con.createStatement();
         	rs=st.executeQuery("select * from user where username='"+username+"' and type='"+usertype+"'");
             
