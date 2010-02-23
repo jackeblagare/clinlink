@@ -27,7 +27,6 @@ public class LoginController extends GenericForwardComposer{
 		
 		int status=0;
 		
-	
 		if(isValid(user,pwd,usertype)==0){
 			return 3;
 		}
