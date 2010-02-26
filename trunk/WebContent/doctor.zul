@@ -1,8 +1,0 @@
-<?page title="Doctor" contentType="text/html;charset=UTF-8"?>
-<zk>
-
-<window title="Doctor" border="normal">
-New Content Here!
-</window>
-</zk>
-

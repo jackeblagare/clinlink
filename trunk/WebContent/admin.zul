@@ -1,7 +1,0 @@
-<?page title="Admin Profile" contentType="text/html;charset=UTF-8"?>
-<zk>
-
-<window title="Admin Profile" border="normal">
-	
-</window>
-</zk>
