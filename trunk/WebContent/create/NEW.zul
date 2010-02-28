@@ -1,0 +1,69 @@
+<?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
+<zk>	
+	<window border="normal" width="350px" title="Create" apply="clinlink.cauc.CreateAccountUserController" >
+		<zscript>
+		<![CDATA[//@IMPORT
+		import clinlink.cauc.*;
+		import org.zkoss.lang.Strings;
+		import org.zkoss.zul.Messagebox;
+		]]><![CDATA[//@DECLARATION
+		
+		int msg=1;
+		int status;
+		int page = 0;
+		
+		User u = new User();
+		CreateAccountUserController auc = new CreateAccountUserController();
+	
+		public void requestCreate(){
+			int usetype = usertype.getSelectedIndex() + 1;
+			auc.doCreate(name.getValue(),licence.getValue(),usetype);		
+			}
+		
+		public void clear(){
+			name.setValue("");
+			licence.setValue("");
+		}	
+		]]><![CDATA[
+		
+		]]></zscript>
+		
+		<div id="loginDiv">
+			<grid>
+				<rows>
+					<row>
+						Name :
+						<textbox id="name" width="200px" value="" />
+					</row>
+					<row>
+						License :
+						<textbox id="licence" width="200px" type="password" />
+					</row>
+					<row>
+						User Type:
+						<bandbox id="bd" width="184px" readonly="true">
+							<bandpopup >
+								<listbox id="usertype" width="200px" onSelect="bd.value=self.selectedItem.label; bd.closeDropdown();">
+	
+									<listitem label="Administrator" value="1"/>
+									<listitem label="Doctor" value="2"/>
+									<listitem label="Staff" value="3" />
+									<listitem label="Patient" value="4" />
+									
+								</listbox>
+
+							</bandpopup>
+						</bandbox>
+
+					</row>
+				</rows>
+			</grid>			
+			<hbox pack="center" width="100%">
+				<button label="Create" id="Login" onClick="requestCreate()"/>
+				<button label="Clear" onClick="clear()" />
+			</hbox>
+			
+		</div>
+		
+	</window>	
+</zk>

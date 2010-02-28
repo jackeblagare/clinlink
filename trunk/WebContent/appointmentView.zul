@@ -1,0 +1,346 @@
+<?page title="View Appointment" contentType="text/html;charset=UTF-8"?>
+<zk>
+<zscript>
+		<![CDATA[
+		import clinlink.appointment.*;
+		import org.zkoss.lang.Strings;
+		import java.util.ArrayList;
+		import java.util.Calendar;
+		
+		int doc;
+		
+		/*if((session.getAttribute("usertype") != null)&&(Integer.parseInt(session.getAttribute("usertype").toString()) == 2)){
+			doc = Integer.parseInt(session.getAttribute("userid").toString());
+		}else if((session.getAttribute("docID") != null)){
+			doc = Integer.parseInt(session.getAttribute("docID").toString());
+			session.setAttribute("usertype", 3);
+			session.setAttribute("userid", 1);
+		}*/
+		
+		if((session.getAttribute("usertype") != null)&&(Integer.parseInt(session.getAttribute("usertype").toString()) == 2)){
+			doc = Integer.parseInt(session.getAttribute("userid").toString());
+		}else if((session.getAttribute("docID") != null) && ((session.getAttribute("usertype") != null)&&((Integer.parseInt(session.getAttribute("usertype").toString()) == 3)||(Integer.parseInt(session.getAttribute("usertype").toString()) == 4)))){
+			doc = Integer.parseInt(session.getAttribute("docID").toString());
+		}else{
+			if(session.getAttribute("usertype") != null){
+				int u = Integer.parseInt(session.getAttribute("usertype").toString());
+				if(u == 1){
+					Executions.sendRedirect("admin.zul");
+				}else if(u == 3){
+					Executions.sendRedirect("staff.zul");
+				}else if(u == 4){
+					Executions.sendRedirect("patient.zul");
+				}else{
+					session.invalidate();
+					Executions.sendRedirect("index.zul");
+				}
+			}else{
+				session.invalidate();
+				Executions.sendRedirect("index.zul");
+			}
+		}
+
+		DoctorManager dm = new DoctorManager();
+		String doc_name = DoctorController.getDoctorName(dm, doc);
+		AppointmentController ac = new AppointmentController();
+		Appointment a = new Appointment();
+		ConsultationHour ch = new ConsultationHour();
+		PatientManager pm = new PatientManager();
+		
+		public void requestViewAppointment(){
+			ac.getScheduledAppointment(a, ch, doc);
+			displayAppointment();
+		}
+		
+		public void displayAppointment(){
+			make.setVisible(false); win1.setVisible(true);
+			win1.setTitle("View Appointment - "+doc_name);
+			Calendar cal = Calendar.getInstance();
+			String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
+			int datenow = cal.get(Calendar.DAY_OF_MONTH);
+			Integer[] days = new Integer[7];
+			for(int n=0;n<7;n++){
+				cal.set(Calendar.DAY_OF_WEEK, n+1);
+				days[n] = cal.get(Calendar.DATE);
+			}
+			String[] weekday = new String[7];
+			String[] comp = new String[7];
+			for(int n=0; n<7; n++){
+				weekday[n] = months[cal.get(Calendar.MONTH)]+" "+days[n];
+				if(Calendar.MONTH < 10){
+					comp[n] = cal.get(Calendar.YEAR)+"-0"+Calendar.MONTH+"-"+days[n];
+				}else{
+					comp[n] = cal.get(Calendar.YEAR)+"-"+Calendar.MONTH+"-"+days[n];
+				}
+			}
+			
+			Grid g = new Grid();
+			Columns c = new Columns();
+			Rows r = new Rows();
+			String[] head = {"Sun","Mon","Tues","Wed","Thurs","Fri","Sat"};
+			Column col1 = new Column();
+			
+			col1.setLabel("Time");
+			col1.setWidth("12.5%");
+			c.appendChild(col1);
+			
+			for(int j=0;j<7;j++){
+				Column col = new Column();
+				col.setLabel(head[j] + " " + weekday[j]);
+				col.setWidth("12.5%");
+				c.appendChild(col);
+			}g.appendChild(c);
+			
+			int index=0;
+			for(int j=0,z=8;j<18;j++){
+				Row row = new Row();
+				Label l1 = new Label();
+				String b,e;
+				if(j%2 == 0){
+					if((j+z)<10){
+						b="0"+(j+z)+":00";
+						e="0"+(j+z)+":30";
+					}else{
+						b=(j+z)+":00";
+						e=(j+z)+":30";
+					}
+				}else{
+					z--;
+					if((j+z)<9){
+						b="0"+(j+z)+":30";
+						e="0"+(j+z+1)+":00";
+					}else if((j+z+1)==10){
+						b="0"+(j+z)+":30";
+						e=(j+z+1)+":00";
+					}else{
+						b=(j+z)+":30";
+						e=(j+z+1)+":00";
+					}
+				}
+				l1.setValue(b+" - "+e);
+				row.appendChild(l1);
+				for(int k=1; k<8; k++){
+					Label la = new Label();
+					if(ch.day.contains(k)){
+						index = ch.day.indexOf(k);
+						if(j%2 == 0){
+							String begin=ch.start.get(index).toString().substring(0,5);
+							String end=ch.end.get(index).toString().substring(0,5);
+							if((begin.compareToIgnoreCase(b) <= 0)&&(end.compareToIgnoreCase(e) >= 0)){
+								if(a.dates.contains(comp[k-1])){
+									int q = a.dates.indexOf(comp[k-1]);
+									String app=a.times.get(q).substring(0,5);
+									if(app.equalsIgnoreCase(b)){
+										la.setValue(a.patients.get(q)+" ("+a.reasons.get(q)+")");
+										a.dates.remove(q);
+										a.times.remove(q);
+										a.patients.remove(q);
+										a.reasons.remove(q);
+										a.patientID.remove(q);
+									}else{
+										la.setValue("make");
+										la.setStyle("color:blue");
+										if(session.getAttribute("usertype") != null){
+											int type = Integer.parseInt(session.getAttribute("usertype").toString());
+											if(type != 2){
+												if((type == 4) && (session.getAttribute("userid") != null)){
+													la.setId(b+","+comp[k-1]+","+doc_name+","+session.getAttribute("userid"));
+												}else{
+													la.setId(b+","+comp[k-1]+","+doc_name);
+												}
+											}else{
+												la.setId(b+","+comp[k-1]+","+doc_name);
+											}
+										}
+										addListener(la);
+									}
+								}else{
+									la.setValue("make");
+									la.setStyle("color:blue");
+									if(session.getAttribute("usertype") != null){
+										int type = Integer.parseInt(session.getAttribute("usertype").toString());
+										if(type != 2){
+											if((type == 4) && (session.getAttribute("userid") != null)){
+												la.setId(b+","+comp[k-1]+","+doc_name+","+session.getAttribute("userid"));
+											}else{
+												la.setId(b+","+comp[k-1]+","+doc_name);
+											}
+										}else{
+											la.setId(b+","+comp[k-1]+","+doc_name);
+										}
+									}
+									addListener(la);
+								}
+								if((end.compareToIgnoreCase(e)==0) && (ch.start.size()!=index+1)){
+									ch.day.remove(index);
+									ch.start.remove(index);
+									ch.end.remove(index);
+								}
+							}else{
+								la.setValue("");
+							}
+						}else{
+							String begin=ch.start.get(index).toString().substring(0,5);
+							String end=ch.end.get(index).toString().substring(0,5);
+							if((begin.compareToIgnoreCase(b) <= 0)&&(end.compareToIgnoreCase(e) >= 0)){
+								if(a.dates.contains(comp[k-1])){
+									int q = a.dates.indexOf(comp[k-1]);
+									String app=a.times.get(q).substring(0,5);
+									if(app.equalsIgnoreCase(b)){
+										la.setValue(a.patients.get(q)+" ("+a.reasons.get(q)+")");
+										a.dates.remove(q);
+										a.times.remove(q);
+										a.patients.remove(q);
+										a.reasons.remove(q);
+										a.patientID.remove(q);
+									}else{
+										la.setValue("make");
+										la.setStyle("color:blue");
+										if(session.getAttribute("usertype") != null){
+											int type = Integer.parseInt(session.getAttribute("usertype").toString());
+											if(type != 2){
+												if((type == 4) && (session.getAttribute("userid") != null)){
+													la.setId(b+","+comp[k-1]+","+doc_name+","+session.getAttribute("userid"));
+												}else{
+													la.setId(b+","+comp[k-1]+","+doc_name);
+												}
+											}else{
+												la.setId(b+","+comp[k-1]+","+doc_name);
+											}
+										}
+										addListener(la);
+									}
+								}else{
+									la.setValue("make");
+									la.setStyle("color:blue");
+									if(session.getAttribute("usertype") != null){
+										int type = Integer.parseInt(session.getAttribute("usertype").toString());
+										if(type != 2){
+											if((type == 4) && (session.getAttribute("userid") != null)){
+												la.setId(b+","+comp[k-1]+","+doc_name+","+session.getAttribute("userid"));
+											}else{
+												la.setId(b+","+comp[k-1]+","+doc_name);
+											}
+										}else{
+											la.setId(b+","+comp[k-1]+","+doc_name);
+										}
+									}
+									addListener(la);
+								}
+								if((end.compareToIgnoreCase(e)==0) && (ch.start.size()!=index+1)){
+									ch.day.remove(index);
+									ch.start.remove(index);
+									ch.end.remove(index);
+								}
+							}else{
+								la.setValue("");
+							}
+						}
+					}else{
+						la.setValue("");
+					}
+					row.appendChild(la);
+				}
+				r.appendChild(row);
+			}
+			g.appendChild(r);
+			win1.appendChild(g);
+		}
+		
+		private void addListener(Label l){
+			l.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
+				public void onEvent(Event event) throws Exception {
+					requestMakeAppointment(l);
+				}
+			});
+		}
+		
+		public void requestMakeAppointment(Label l){
+			String s = l.getId().toString();
+			String[] q = s.split(",");
+			Grid g = new Grid();
+			Columns c = new Columns();
+			Column col = new Column();
+			col.setWidth("150px"); c.appendChild(col); g.appendChild(c);
+			
+			Rows r = new Rows();
+			Row r1 = new Row(); Label l1 = new Label(); Vbox v1 = new Vbox(); Combobox c1 = new Combobox(); c1.setAutodrop(true);
+			Row r2 = new Row(); Label l2 = new Label(); Textbox t2 = new Textbox();
+			Row r3 = new Row(); Label l3 = new Label(); Textbox t3 = new Textbox();
+			Row r4 = new Row(); Label l4 = new Label(); Textbox t4 = new Textbox();
+			Row r5 = new Row(); Label l5 = new Label(); Textbox t5 = new Textbox();
+			Row r6 = new Row(); Button b1 = new Button("Add"); Button b2 = new Button("Cancel");
+			b1.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
+				public void onEvent(Event event) throws Exception {
+					try{
+					if(q.length == 4){
+						if(ac.makeAppointment(a, c1.getValue(), Integer.parseInt(q[3]), doc, q[1], q[0], t5.getValue())){
+							alert("Appointment successfully made.");
+						}else{
+							alert("Unable to schedule appointment. Please select another date and time slot.");
+						}
+						Executions.sendRedirect("appointmentView.zul");
+					}else{
+						int tempid = pm.patients.indexOf(c1.getValue());
+						if(tempid != -1){
+							if(ac.makeAppointment(a, pm.patients.get(tempid), pm.id.get(tempid), doc, q[1], q[0], t5.getValue())){
+								alert("Appointment successfully made.");
+							}else{
+								alert("Unable to schedule appointment. Please select another date and time slot.");
+							}
+							Executions.sendRedirect("appointmentView.zul");
+						}else{
+							//ac.makeAppointment(a, c1.getValue(), -1, doc, q[1], q[0], t5.getValue());
+							alert("Sorry, feature not yet supported.");
+							Executions.sendRedirect("appointmentView.zul");
+						}
+					}
+					}catch(Exception e){
+						alert("An error occurred: "+e.toString());
+					}
+				}
+			});
+			
+			b2.setHref("appointmentView.zul");
+			
+			Hbox h1 = new Hbox(); h1.appendChild(b1); h1.appendChild(b2); Hbox h2 = new Hbox();
+			
+			l1.setValue("Patient Name:");
+			if(q.length == 4){
+				c1.setText(PatientController.getPatientName(pm, Integer.parseInt(q[3])));
+				c1.setReadonly(true);
+			}else{
+				PatientController.getPatientNames(pm);
+				Object[] names = pm.patients.toArray();
+				ListModel lm = new SimpleListModel(names);
+				c1.setModel(lm);
+			}
+			v1.appendChild(c1);
+			r1.appendChild(l1); r1.appendChild(v1); r.appendChild(r1);
+			
+			l2.setValue("Doctor Name:"); t2.setWidth("250px"); t2.setText(q[2]); t2.setReadonly(true);
+			l3.setValue("Date:"); t3.setWidth("250px"); t3.setText(q[1]); t3.setReadonly(true);
+			l4.setValue("Time:"); t4.setWidth("250px"); t4.setText(q[0]); t4.setReadonly(true);
+			l5.setValue("Reason/s:"); t5.setWidth("250px"); t5.setHeight("50px"); t5.setMultiline(true);
+			t5.setMaxlength(100); Hbox ht = new Hbox(); Label lt = new Label("max of 100 characters");
+			ht.appendChild(t5); ht.appendChild(lt);
+			
+			r2.appendChild(l2); r2.appendChild(t2); r.appendChild(r2);
+			r3.appendChild(l3); r3.appendChild(t3); r.appendChild(r3);
+			r4.appendChild(l4); r4.appendChild(t4); r.appendChild(r4);
+			r5.appendChild(l5); r5.appendChild(ht); r.appendChild(r5);
+			r6.appendChild(h2); r6.appendChild(h1); r.appendChild(r6);
+			
+			g.appendChild(r); make.appendChild(g); make.setVisible(true); win1.setVisible(false);
+		}
+		
+	]]>
+</zscript>
+
+<separator />
+<window id="make" title="Make Appointment" border="normal"  visible="false">
+</window>
+<window id="win1" title="View Appointment" border="normal" apply="AppointmentController" onCreate="requestViewAppointment()">
+</window>
+
+</zk>

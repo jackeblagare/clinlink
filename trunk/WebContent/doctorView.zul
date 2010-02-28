@@ -1,0 +1,75 @@
+<?page title="Doctor List" contentType="text/html;charset=UTF-8"?>
+<zk>
+<zscript>
+		<![CDATA[
+		import clinlink.appointment.DoctorController;
+		import clinlink.appointment.DoctorManager;
+		import org.zkoss.lang.Strings;
+
+		if(session.getAttribute("usertype") == null){
+			session.invalidate();
+			Executions.sendRedirect("index.zul");
+		}else if(Integer.parseInt(session.getAttribute("usertpe").toString()) == 1){
+			Executions.sendRedirect("admin.zul");
+		}else if(Integer.parseInt(session.getAttribute("usertpe").toString()) == 2){
+			Executions.sendRedirect("doctor.zul");
+		}
+		
+		DoctorController dc = new DoctorController();
+		DoctorManager dm = new DoctorManager();
+			
+		public void requestViewDoctors(){
+			dc.getDoctorNames(dm);
+			displayDoctorNames();
+		}
+		
+		public void displayDoctorNames(){
+			Grid g = new Grid();
+			Columns c = new Columns();
+			Rows r = new Rows();
+			Column c1 = new Column();
+			Column c2 = new Column();
+			int i=-1;
+			
+			c1.setLabel("Specialization");
+			c2.setLabel("Doctor's Name");
+			c1.setSort("auto");
+			c2.setSort("auto");
+			c.appendChild(c1);
+			c.appendChild(c2);
+			g.appendChild(c);
+			
+			while(++i != dm.specialization.size()){
+				Row r1 = new Row();
+				Label l1 = new Label();
+				Label l2 = new Label();
+				l1.setValue(dm.specialization.get(i));
+				l2.setValue(dm.doctors.get(i));
+				l2.setStyle("color: blue");
+				addListener(l2);
+				r1.appendChild(l1);
+				r1.appendChild(l2);
+				r.appendChild(r1);
+			}
+			g.appendChild(r);
+			win.appendChild(g);
+		}
+		
+		private void addListener(Label l2){
+			l2.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
+				public void onEvent(Event event) throws Exception {
+					int temp = dm.doctors.indexOf(l2.getValue());
+					session.setAttribute("docID",dm.id.get(temp));
+					Executions.sendRedirect("appointmentView.zul");
+				}
+			});
+		}
+	]]>
+</zscript>
+
+<separator/>
+
+<window id="win" title="Doctor List" border="normal" apply="DoctorController" onCreate="requestViewDoctors()">
+</window>
+
+</zk>

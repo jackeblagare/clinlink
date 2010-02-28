@@ -1,0 +1,101 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk>
+<window title="new page title" border="normal" id="window2" width="2500px">
+<zscript>
+	<![CDATA[//@IMPORT
+	import clinlink.auth.*;
+	import org.zkoss.lang.Strings;
+	import java.util.ArrayList;
+
+	]]><![CDATA[//@DECLARATION
+	
+	String kat3=" ";
+    User u = new User();
+    SearchController sc2 = new SearchController();
+    Object[][] pat_id;
+    public void searchname()
+    {
+    	if (session.getAttribute("userid") == null)
+    		Executions.sendRedirect ("index.zul");
+    	else{	int kat = Integer.parseInt(session.getAttribute("userid").toString());
+    	
+	    pat_id = sc2.doSearchMed(kat);	
+	  
+	  	Grid grid2 = new Grid();
+		Columns col2 = new Columns();
+		Rows row2 = new Rows();
+		
+		Column col22 = new Column("Pat ID");
+		Column col23 = new Column("Record ID");
+		Column col24 = new Column ("Date adm");
+		Column col25 = new Column("Date rel");
+		Column col26 = new Column("class");
+		Column col27 = new Column ("dob");
+		Column col28 = new Column("time adm");
+		Column col29 = new Column("time rel");
+		Column col210 = new Column ("doctor id");	
+		Column col211 = new Column("height");
+		Column col212 = new Column("weight");
+		Column col213 = new Column ("diagnosis");
+		Column col214 = new Column ("age");
+		Column col215 = new Column (" ");
+	
+		col2.appendChild(col22);
+		col2.appendChild(col23);
+		col2.appendChild(col24);
+		col2.appendChild(col25);
+		col2.appendChild(col26);
+		col2.appendChild(col27);
+		col2.appendChild(col28);
+		col2.appendChild(col29);
+		col2.appendChild(col210);
+		col2.appendChild(col211);
+		col2.appendChild(col212);
+		col2.appendChild(col213);
+		col2.appendChild(col214);
+		col2.appendChild(col215);
+		grid2.appendChild(col2);
+		int yy=0;
+		   
+		   
+		   
+		  while(pat_id[yy][0].toString().equals("-1")== false)
+		  {		
+				int ii=0;
+				Row row22 = new Row();
+		   	for (ii=0; ii<13; ii++)
+		   	{
+		   		Label lab = new Label();
+				lab.setValue(pat_id[yy][ii].toString());
+				row22.appendChild(lab);
+			   
+		   	}
+		   	Button but = new Button("Go");
+		  
+		   	row22.appendChild(but);
+		   	yy++;
+		   	row2.appendChild(row22);
+		  }
+		  
+		
+		grid2.appendChild(row2);
+		window2.appendChild(grid2);
+    	}
+	
+    }
+    
+	public void clear()
+	{
+		usertb.setValue("");
+	}
+	
+
+	
+	]]><![CDATA[
+
+]]></zscript>
+<div onCreate="searchname()">
+</div>
+<button label="go back" href="patient.zul" />
+</window>
+</zk>

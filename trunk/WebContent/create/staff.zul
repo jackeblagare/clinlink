@@ -1,0 +1,46 @@
+<?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
+<zk>	
+	<window border="normal" width="350px" title="Create" apply="clinlink.cauc.CreateAccountUserController" >
+		<zscript>
+		<![CDATA[//@IMPORT
+		import clinlink.cauc.*;
+		import org.zkoss.lang.Strings;
+		import org.zkoss.zul.Messagebox;
+		]]><![CDATA[//@DECLARATION
+				
+		User n = new User();
+		CreateAccountUserController nauc = new CreateAccountUserController();
+	
+		public void requestMove(){
+			//int usetype = usertype.getSelectedIndex() + 1;
+			nauc.doMoveStaff(name.getValue(),position.getValue() );
+			System.out.println("nagMOVE staff");
+			}
+    	
+		public void clear(){
+			name.setValue("");
+			position.setValue("");
+		}	
+		]]><![CDATA[		
+		]]></zscript>
+		
+		<div id="createDiv">
+			<grid>
+				<rows>
+					<row>
+						Name :
+						<textbox id="name" width="200px" value="" />
+					</row>
+					<row>
+						Position :
+						<textbox id="position" width="200px" value="" />
+					</row>
+			</rows>
+			</grid>			
+			<hbox pack="center" width="100%">
+				<button label="Create" id="Create" onClick="requestMove()"/>
+				<button label="Clear" onClick="clear()" />
+			</hbox>
+		</div>
+	</window>	
+</zk>
