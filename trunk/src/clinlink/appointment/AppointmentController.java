@@ -21,7 +21,15 @@ public class AppointmentController extends GenericForwardComposer{
 		//displayAppointment();
 	}
 	
-	public boolean makeAppointment(Appointment app, String patname, int p_id, int d_id, String date, String time, String reason){
+	public int makeAppointment(Appointment app, String patname, int p_id, int d_id, String date, String time, String reason){
 		return app.setAppointment(patname, p_id, d_id, date, time, reason);
+	}
+	
+	public boolean isValid(String patname, String d_id, String date, String time, String reason){
+		if((patname!=null)&&(d_id!=null)&&(date!=null)&&(time!=null)&&(reason!=null)){
+			return true;
+		}else{
+			return false;
+		}
 	}
 }

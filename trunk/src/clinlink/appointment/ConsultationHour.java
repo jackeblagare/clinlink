@@ -12,6 +12,7 @@ public class ConsultationHour{
 	public ArrayList<Integer> day = new ArrayList<Integer>();
 	public ArrayList<Time> start = new ArrayList<Time>();
 	public ArrayList<Time> end = new ArrayList<Time>();
+	
     public void getSchedule(int doc){
     	try{
     		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");

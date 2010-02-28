@@ -17,7 +17,29 @@ public class DoctorManager{
 		try{
     		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
     		st= con.createStatement();
-    		rs=st.executeQuery("select doctor_id, name, specialization from doctor group by specialization");
+    		rs=st.executeQuery("select doctor_id, name, specialization from doctor order by specialization");
+    		while(rs.next() != false){
+    			id.add(rs.getInt(1));
+    			doctors.add(rs.getString(2));
+    			specialization.add(rs.getString(3));
+    		}
+    	}catch(SQLException e){
+    		exc = e.toString();
+    	}finally{
+    		if(st != null){
+    			try{st.close();}catch(SQLException ex){}
+             }	
+             if(con != null){
+            	 try{con.close();}catch(SQLException ex){}
+             }
+        }
+	}
+	
+	public void getAllDoctors(int pid){
+		try{
+    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+    		st= con.createStatement();
+    		rs=st.executeQuery("select distinct d.doctor_id, d.name, d.specialization from doctor d, appointment a where d.doctor_id=a.doctor_id and a.patient_id="+pid+" order by d.specialization");
     		while(rs.next() != false){
     			id.add(rs.getInt(1));
     			doctors.add(rs.getString(2));

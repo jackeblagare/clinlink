@@ -7,7 +7,7 @@ public class Appointment{
 	public ResultSet rs;
 	public Connection con;
 	public Statement st;
-	public String exc="";
+	public String exc;
 	
 	public ArrayList<String> dates = new ArrayList<String>();
 	public ArrayList<String> times = new ArrayList<String>();
@@ -39,22 +39,26 @@ public class Appointment{
         }
     }
     
-    public boolean setAppointment(String patname, int p_id, int d_id, String date, String time, String reason){
-    	boolean ok;
+    public int setAppointment(String patname, int p_id, int d_id, String date, String time, String reason){
+    	int ok;
     	try{
     		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
     		st= con.createStatement();
     		rs=st.executeQuery("select * from appointment where date='"+date+"' and time='"+time+"' and doctor_id="+d_id);
     		if(rs.next() == false){
-    			System.out.println("rs.next pumasok");
-    			st.executeUpdate("insert into appointment values('"+ date +"','"+ time +"',"+ d_id + ",'" + reason +"'," + p_id + ",NULL)");
-    			ok=true;
+    			rs=st.executeQuery("select * from appointment where date='"+date+"' and patient_id='"+p_id+"' and doctor_id="+d_id);
+    			if(rs.next() == false){
+    				st.executeUpdate("insert into appointment values('"+ date +"','"+ time +"',"+ d_id + ",'" + reason +"'," + p_id + ",NULL)");
+    				ok=0;
+    			}else{
+    				ok=-1;
+    			}
     		}else{
-    			ok=false;
+    			ok=1;
     		}
     	}catch(SQLException e){
     		exc = e.toString();
-    		ok=false;
+    		ok=1;
     	}finally{
     		if(st != null){
     			try{st.close();}catch(SQLException ex){}

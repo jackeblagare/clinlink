@@ -18,6 +18,10 @@ public class DoctorController extends GenericForwardComposer{
 		dm.getAllDoctors();
 	}
 	
+	public void getDoctorNames(DoctorManager dm, int pid){
+		dm.getAllDoctors(pid);
+	}
+	
 	public static String getDoctorName(DoctorManager dm, int d_id){
 		return dm.getName(d_id);
 	}

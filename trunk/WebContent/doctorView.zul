@@ -6,21 +6,27 @@
 		import clinlink.appointment.DoctorManager;
 		import org.zkoss.lang.Strings;
 
-		if(session.getAttribute("usertype") == null){
+		/*if(session.getAttribute("usertype") == null){
 			session.invalidate();
 			Executions.sendRedirect("index.zul");
-		}else if(Integer.parseInt(session.getAttribute("usertpe").toString()) == 1){
+		}else if(Integer.parseInt(session.getAttribute("usertype").toString()) == 1){
 			Executions.sendRedirect("admin.zul");
-		}else if(Integer.parseInt(session.getAttribute("usertpe").toString()) == 2){
+		}else if(Integer.parseInt(session.getAttribute("usertype").toString()) == 2){
 			Executions.sendRedirect("doctor.zul");
-		}
-		
+		}*/
+		//session.setAttribute("usertype", 2); session.setAttribute("userid",1);
 		DoctorController dc = new DoctorController();
 		DoctorManager dm = new DoctorManager();
 			
 		public void requestViewDoctors(){
-			dc.getDoctorNames(dm);
-			displayDoctorNames();
+			//if(session.getAttribute("usertype")!=null){
+				//if(Integer.parseInt(session.getAttribute("usertype").toString())==3){
+					dc.getDoctorNames(dm);
+				//}else if((Integer.parseInt(session.getAttribute("usertype").toString())==4) && (session.getAttribute("userid")!=null)){
+					//dc.getDoctorNames(dm, (Integer.parseInt(session.getAttribute("userid").toString())));
+				//}
+				displayDoctorNames();
+			//}
 		}
 		
 		public void displayDoctorNames(){
@@ -62,14 +68,32 @@
 					session.setAttribute("docID",dm.id.get(temp));
 					Executions.sendRedirect("appointmentView.zul");
 				}
+				
 			});
 		}
+		
+		public void viewProfile(){
+			if(session.getAttribute("usertype")!=null){
+				int id = Integer.parseInt(session.getAttribute("usertype").toString());
+				if(id == 3){
+					Executions.sendRedirect("staff.zul");
+				}else if(id == 4){
+					Executions.sendRedirect("patient.zul");
+				}
+			}
+		}
+		
 	]]>
 </zscript>
 
 <separator/>
 
-<window id="win" title="Doctor List" border="normal" apply="DoctorController" onCreate="requestViewDoctors()">
-</window>
+<div id="win" onCreate="requestViewDoctors()">
+<menubar>
+	<menuitem label="Profile" onClick="viewProfile()"/>
+	<menuitem label="Logout" onClick='session.invalidate(); Executions.sendRedirect("/")'/>
+</menubar>
+<separator/>
+</div>
 
 </zk>

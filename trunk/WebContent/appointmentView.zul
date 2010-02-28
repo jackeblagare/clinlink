@@ -1,5 +1,6 @@
 <?page title="View Appointment" contentType="text/html;charset=UTF-8"?>
 <zk>
+
 <zscript>
 		<![CDATA[
 		import clinlink.appointment.*;
@@ -9,15 +10,15 @@
 		
 		int doc;
 		
-		/*if((session.getAttribute("usertype") != null)&&(Integer.parseInt(session.getAttribute("usertype").toString()) == 2)){
+		if((session.getAttribute("usertype") != null)&&(Integer.parseInt(session.getAttribute("usertype").toString()) == 2)&&(session.getAttribute("userid") != null)){
 			doc = Integer.parseInt(session.getAttribute("userid").toString());
 		}else if((session.getAttribute("docID") != null)){
 			doc = Integer.parseInt(session.getAttribute("docID").toString());
 			session.setAttribute("usertype", 3);
 			session.setAttribute("userid", 1);
-		}*/
+		}
 		
-		if((session.getAttribute("usertype") != null)&&(Integer.parseInt(session.getAttribute("usertype").toString()) == 2)){
+		/*if((session.getAttribute("usertype") != null)&&(Integer.parseInt(session.getAttribute("usertype").toString()) == 2)){
 			doc = Integer.parseInt(session.getAttribute("userid").toString());
 		}else if((session.getAttribute("docID") != null) && ((session.getAttribute("usertype") != null)&&((Integer.parseInt(session.getAttribute("usertype").toString()) == 3)||(Integer.parseInt(session.getAttribute("usertype").toString()) == 4)))){
 			doc = Integer.parseInt(session.getAttribute("docID").toString());
@@ -38,7 +39,7 @@
 				session.invalidate();
 				Executions.sendRedirect("index.zul");
 			}
-		}
+		}*/
 
 		DoctorManager dm = new DoctorManager();
 		String doc_name = DoctorController.getDoctorName(dm, doc);
@@ -48,29 +49,49 @@
 		PatientManager pm = new PatientManager();
 		
 		public void requestViewAppointment(){
+			if(session.getAttribute("usertype")!=null){
+				int ut = Integer.parseInt(session.getAttribute("usertype").toString());
+				if((ut == 3) || (ut == 4)){
+					Menuseparator ms = new Menuseparator(); Menuitem mi = new Menuitem();
+					mi.setLabel("Doctor List"); mi.setHref("doctorView.zul");
+					mb.appendChild(ms); mb.appendChild(mi);
+				}
+			}
 			ac.getScheduledAppointment(a, ch, doc);
 			displayAppointment();
 		}
 		
 		public void displayAppointment(){
+			/* backup of date & pat_id to avoid multiple appointmens for 1 patient in a day
+			*/
+			this.page.setTitle("View Appointment - "+doc_name);
 			make.setVisible(false); win1.setVisible(true);
-			win1.setTitle("View Appointment - "+doc_name);
 			Calendar cal = Calendar.getInstance();
 			String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
-			int datenow = cal.get(Calendar.DAY_OF_MONTH);
+
 			Integer[] days = new Integer[7];
-			for(int n=0;n<7;n++){
+			/*for(int n=0;n<7;n++){
 				cal.set(Calendar.DAY_OF_WEEK, n+1);
 				days[n] = cal.get(Calendar.DATE);
-			}
+			}*/
 			String[] weekday = new String[7];
 			String[] comp = new String[7];
 			for(int n=0; n<7; n++){
+				cal.set(Calendar.DAY_OF_WEEK, n+1);
+				days[n] = cal.get(Calendar.DATE);
 				weekday[n] = months[cal.get(Calendar.MONTH)]+" "+days[n];
-				if(Calendar.MONTH < 10){
-					comp[n] = cal.get(Calendar.YEAR)+"-0"+Calendar.MONTH+"-"+days[n];
+				if((cal.get(Calendar.MONTH)+1) < 10){
+					if(days[n] < 10){
+						comp[n] = cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-0"+days[n];
+					}else{
+						comp[n] = cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-"+days[n];
+					}
 				}else{
-					comp[n] = cal.get(Calendar.YEAR)+"-"+Calendar.MONTH+"-"+days[n];
+					if(days[n] < 10){
+						comp[n] = cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-0"+days[n];
+					}else{
+						comp[n] = cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+days[n];
+					}
 				}
 			}
 			
@@ -90,7 +111,7 @@
 				col.setWidth("12.5%");
 				c.appendChild(col);
 			}g.appendChild(c);
-			
+		
 			int index=0;
 			for(int j=0,z=8;j<18;j++){
 				Row row = new Row();
@@ -138,38 +159,18 @@
 										a.reasons.remove(q);
 										a.patientID.remove(q);
 									}else{
-										la.setValue("make");
-										la.setStyle("color:blue");
-										if(session.getAttribute("usertype") != null){
-											int type = Integer.parseInt(session.getAttribute("usertype").toString());
-											if(type != 2){
-												if((type == 4) && (session.getAttribute("userid") != null)){
-													la.setId(b+","+comp[k-1]+","+doc_name+","+session.getAttribute("userid"));
-												}else{
-													la.setId(b+","+comp[k-1]+","+doc_name);
-												}
-											}else{
-												la.setId(b+","+comp[k-1]+","+doc_name);
-											}
+										if((session.getAttribute("usertype")!=null)&&((Integer.parseInt(session.getAttribute("usertype").toString())==3)||(Integer.parseInt(session.getAttribute("usertype").toString())==4))){
+											displayMake(la, b, comp, k);
+										}else{
+											la.setValue("-----");
 										}
-										addListener(la);
 									}
 								}else{
-									la.setValue("make");
-									la.setStyle("color:blue");
-									if(session.getAttribute("usertype") != null){
-										int type = Integer.parseInt(session.getAttribute("usertype").toString());
-										if(type != 2){
-											if((type == 4) && (session.getAttribute("userid") != null)){
-												la.setId(b+","+comp[k-1]+","+doc_name+","+session.getAttribute("userid"));
-											}else{
-												la.setId(b+","+comp[k-1]+","+doc_name);
-											}
-										}else{
-											la.setId(b+","+comp[k-1]+","+doc_name);
-										}
+									if((session.getAttribute("usertype")!=null)&&((Integer.parseInt(session.getAttribute("usertype").toString())==3)||(Integer.parseInt(session.getAttribute("usertype").toString())==4))){
+										displayMake(la, b, comp, k);
+									}else{
+										la.setValue("-----");
 									}
-									addListener(la);
 								}
 								if((end.compareToIgnoreCase(e)==0) && (ch.start.size()!=index+1)){
 									ch.day.remove(index);
@@ -194,38 +195,18 @@
 										a.reasons.remove(q);
 										a.patientID.remove(q);
 									}else{
-										la.setValue("make");
-										la.setStyle("color:blue");
-										if(session.getAttribute("usertype") != null){
-											int type = Integer.parseInt(session.getAttribute("usertype").toString());
-											if(type != 2){
-												if((type == 4) && (session.getAttribute("userid") != null)){
-													la.setId(b+","+comp[k-1]+","+doc_name+","+session.getAttribute("userid"));
-												}else{
-													la.setId(b+","+comp[k-1]+","+doc_name);
-												}
-											}else{
-												la.setId(b+","+comp[k-1]+","+doc_name);
-											}
+										if((session.getAttribute("usertype")!=null)&&((Integer.parseInt(session.getAttribute("usertype").toString())==3)||(Integer.parseInt(session.getAttribute("usertype").toString())==4))){
+											displayMake(la, b, comp, k);
+										}else{
+											la.setValue("-----");
 										}
-										addListener(la);
 									}
 								}else{
-									la.setValue("make");
-									la.setStyle("color:blue");
-									if(session.getAttribute("usertype") != null){
-										int type = Integer.parseInt(session.getAttribute("usertype").toString());
-										if(type != 2){
-											if((type == 4) && (session.getAttribute("userid") != null)){
-												la.setId(b+","+comp[k-1]+","+doc_name+","+session.getAttribute("userid"));
-											}else{
-												la.setId(b+","+comp[k-1]+","+doc_name);
-											}
-										}else{
-											la.setId(b+","+comp[k-1]+","+doc_name);
-										}
+									if((session.getAttribute("usertype")!=null)&&((Integer.parseInt(session.getAttribute("usertype").toString())==3)||(Integer.parseInt(session.getAttribute("usertype").toString())==4))){
+										displayMake(la, b, comp, k);
+									}else{
+										la.setValue("-----");
 									}
-									addListener(la);
 								}
 								if((end.compareToIgnoreCase(e)==0) && (ch.start.size()!=index+1)){
 									ch.day.remove(index);
@@ -247,6 +228,23 @@
 			win1.appendChild(g);
 		}
 		
+		private void displayMake(Label la, String b, String[] comp, int k){
+			la.setValue("make");
+			la.setStyle("color:blue");
+			if(session.getAttribute("usertype") != null){
+				int type = Integer.parseInt(session.getAttribute("usertype").toString());
+				if(type != 2){
+					if((type == 4) && (session.getAttribute("userid") != null)){
+						la.setId(b+","+comp[k-1]+","+doc_name+","+session.getAttribute("userid"));
+					}else{
+						la.setId(b+","+comp[k-1]+","+doc_name);
+					}
+				}else{
+					la.setId(b+","+comp[k-1]+","+doc_name);
+				}
+			}
+			addListener(la);
+		}
 		private void addListener(Label l){
 			l.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
 				public void onEvent(Event event) throws Exception {
@@ -256,6 +254,7 @@
 		}
 		
 		public void requestMakeAppointment(Label l){
+			this.page.setTitle("Make Appointment - "+doc_name);
 			String s = l.getId().toString();
 			String[] q = s.split(",");
 			Grid g = new Grid();
@@ -273,20 +272,27 @@
 			b1.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
 				public void onEvent(Event event) throws Exception {
 					try{
+					if(ac.isValid(c1.getValue(), t2.getValue(), t3.getValue(), t4.getValue(), t5.getValue())){
 					if(q.length == 4){
-						if(ac.makeAppointment(a, c1.getValue(), Integer.parseInt(q[3]), doc, q[1], q[0], t5.getValue())){
+						int success = ac.makeAppointment(a, c1.getValue(), Integer.parseInt(q[3]), doc, q[1], q[0], t5.getValue());
+						if(success == 0){
 							alert("Appointment successfully made.");
-						}else{
+						}else if(success == 1){
 							alert("Unable to schedule appointment. Please select another date and time slot.");
+						}else{
+							alert(c1.getValue()+" already has an appointment with "+doc_name);
 						}
 						Executions.sendRedirect("appointmentView.zul");
 					}else{
 						int tempid = pm.patients.indexOf(c1.getValue());
 						if(tempid != -1){
-							if(ac.makeAppointment(a, pm.patients.get(tempid), pm.id.get(tempid), doc, q[1], q[0], t5.getValue())){
+							int success = ac.makeAppointment(a, pm.patients.get(tempid), pm.id.get(tempid), doc, q[1], q[0], t5.getValue());
+							if(success == 0){
 								alert("Appointment successfully made.");
-							}else{
+							}else if(success == 1){
 								alert("Unable to schedule appointment. Please select another date and time slot.");
+							}else{
+								alert(pm.patients.get(tempid)+" already has an appointment with "+doc_name);
 							}
 							Executions.sendRedirect("appointmentView.zul");
 						}else{
@@ -294,6 +300,9 @@
 							alert("Sorry, feature not yet supported.");
 							Executions.sendRedirect("appointmentView.zul");
 						}
+					}
+					}else{
+						alert("Please complete the information.");
 					}
 					}catch(Exception e){
 						alert("An error occurred: "+e.toString());
@@ -334,13 +343,39 @@
 			g.appendChild(r); make.appendChild(g); make.setVisible(true); win1.setVisible(false);
 		}
 		
+		public void viewProfile(){
+			if(session.getAttribute("usertype")!=null){
+				int id = Integer.parseInt(session.getAttribute("usertype").toString());
+				if(id == 2){
+					Executions.sendRedirect("doctor.zul");
+				}else if(id == 3){
+					Executions.sendRedirect("staff.zul");
+				}else if(id == 4){
+					Executions.sendRedirect("patient.zul");
+				}
+			}
+		}
+
 	]]>
 </zscript>
 
 <separator />
-<window id="make" title="Make Appointment" border="normal"  visible="false">
-</window>
-<window id="win1" title="View Appointment" border="normal" apply="AppointmentController" onCreate="requestViewAppointment()">
-</window>
+<div id="make" visible="false">
+<menubar>
+	<menuitem label="Profile" onClick="viewProfile()"/>
+	<menuitem label="Logout"/>
+</menubar>
+<separator/>
+</div>
+
+<div id="win1" onCreate="requestViewAppointment()">
+<menubar id="mb">
+	<menuitem label="Profile" onClick="viewProfile()"/>
+	<menuitem label="Logout" onClick='session.invalidate(); Executions.sendRedirect("/")'/>
+</menubar>
+<separator/>
+
+</div>
+
 
 </zk>
