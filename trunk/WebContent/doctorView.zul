@@ -6,45 +6,34 @@
 		import clinlink.appointment.DoctorManager;
 		import org.zkoss.lang.Strings;
 
-		/*if(session.getAttribute("usertype") == null){
+		if(session.getAttribute("usertype") == null){
 			session.invalidate();
-			Executions.sendRedirect("index.zul");
+			Executions.sendRedirect("/");
 		}else if(Integer.parseInt(session.getAttribute("usertype").toString()) == 1){
 			Executions.sendRedirect("admin.zul");
 		}else if(Integer.parseInt(session.getAttribute("usertype").toString()) == 2){
 			Executions.sendRedirect("doctor.zul");
-		}*/
-		//session.setAttribute("usertype", 2); session.setAttribute("userid",1);
+		}
+		
 		DoctorController dc = new DoctorController();
 		DoctorManager dm = new DoctorManager();
 			
 		public void requestViewDoctors(){
-			//if(session.getAttribute("usertype")!=null){
-				//if(Integer.parseInt(session.getAttribute("usertype").toString())==3){
+			if(session.getAttribute("usertype")!=null){
+				if(Integer.parseInt(session.getAttribute("usertype").toString())==3){
 					dc.getDoctorNames(dm);
-				//}else if((Integer.parseInt(session.getAttribute("usertype").toString())==4) && (session.getAttribute("userid")!=null)){
-					//dc.getDoctorNames(dm, (Integer.parseInt(session.getAttribute("userid").toString())));
-				//}
+				}else if((Integer.parseInt(session.getAttribute("usertype").toString())==4) && (session.getAttribute("userid")!=null)){
+					dc.getDoctorNames(dm, (Integer.parseInt(session.getAttribute("userid").toString())));
+				}
 				displayDoctorNames();
-			//}
+			}else{
+				session.invalidate();
+				Executions.sendRedirect("/");
+			}
 		}
 		
 		public void displayDoctorNames(){
-			Grid g = new Grid();
-			Columns c = new Columns();
-			Rows r = new Rows();
-			Column c1 = new Column();
-			Column c2 = new Column();
 			int i=-1;
-			
-			c1.setLabel("Specialization");
-			c2.setLabel("Doctor's Name");
-			c1.setSort("auto");
-			c2.setSort("auto");
-			c.appendChild(c1);
-			c.appendChild(c2);
-			g.appendChild(c);
-			
 			while(++i != dm.specialization.size()){
 				Row r1 = new Row();
 				Label l1 = new Label();
@@ -57,8 +46,6 @@
 				r1.appendChild(l2);
 				r.appendChild(r1);
 			}
-			g.appendChild(r);
-			win.appendChild(g);
 		}
 		
 		private void addListener(Label l2){
@@ -72,7 +59,7 @@
 			});
 		}
 		
-		public void viewProfile(){
+		private void viewProfile(){
 			if(session.getAttribute("usertype")!=null){
 				int id = Integer.parseInt(session.getAttribute("usertype").toString());
 				if(id == 3){
@@ -94,6 +81,14 @@
 	<menuitem label="Logout" onClick='session.invalidate(); Executions.sendRedirect("/")'/>
 </menubar>
 <separator/>
+	<grid id="g">
+		<columns>
+			<column label="Specialization" sort="auto"/>
+			<column label="Doctor's Name" sort="auto"/>
+		</columns>
+		<rows id="r">
+		</rows>
+	</grid>
 </div>
 
 </zk>
