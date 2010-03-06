@@ -81,6 +81,13 @@
 					}
 				}
 			}
+			sun.setLabel(sun.getLabel()+":"+weekday[0]);
+			mon.setLabel(mon.getLabel()+":"+weekday[1]);
+			tues.setLabel(tues.getLabel()+":"+weekday[2]);
+			wed.setLabel(wed.getLabel()+":"+weekday[3]);
+			thurs.setLabel(thurs.getLabel()+":"+weekday[4]);
+			fri.setLabel(fri.getLabel()+":"+weekday[5]);
+			sat.setLabel(sat.getLabel()+":"+weekday[6]);
 			
 			int index=0;
 			for(int j=0,z=8;j<18;j++){
@@ -373,13 +380,13 @@
 	<grid id="g">
 		<columns id="c">
 			<column label="Time" width="12.5%"/>
-			<column label="Sun" width="12.5%"/>
-			<column label="Mon" width="12.5%"/>
-			<column label="Tues" width="12.5%"/>
-			<column label="Wed" width="12.5%"/>
-			<column label="Thurs" width="12.5%"/>
-			<column label="Fri" width="12.5%"/>
-			<column label="Sat" width="12.5%"/>
+			<column label="Sun" width="12.5%" id="sun"/>
+			<column label="Mon" width="12.5%" id="mon"/>
+			<column label="Tues" width="12.5%" id="tues"/>
+			<column label="Wed" width="12.5%" id="wed"/>
+			<column label="Thurs" width="12.5%" id="thurs"/>
+			<column label="Fri" width="12.5%" id="fri"/>
+			<column label="Sat" width="12.5%" id="sat"/>
 		</columns>
 		<rows id="rr">
 		</rows>
