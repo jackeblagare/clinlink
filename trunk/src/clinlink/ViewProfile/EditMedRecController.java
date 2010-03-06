@@ -1,8 +1,8 @@
 package clinlink.ViewProfile;
 
-//import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-//import org.zkoss.lang.Strings;
+import org.zkoss.lang.Strings;
 
 import clinlink.ViewProfile.Medical_record;
 import clinlink.ViewProfile.Patient;

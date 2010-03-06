@@ -1,4 +1,4 @@
-package Clinlink.ViewProfile;
+package clinlink.ViewProfile;
 
 public class test {
 
