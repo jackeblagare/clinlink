@@ -179,15 +179,22 @@
 		
 		private void displayPatName(Label la, int q){
 			la.setValue(a.patients.get(q)+" ("+a.reasons.get(q)+")");
-			if((session.getAttribute("usertype")!=null)&&(Integer.parseInt(session.getAttribute("usertype").toString())==4)){
-				if(session.getAttribute("userid")!=null){
-					int patId = Integer.parseInt(session.getAttribute("userid").toString());
-					if(patId == a.patientID.get(q)){
-						la.setStyle("color:blue");
-						la.setValue(la.getValue()+"[cancel]");
-						la.setId(a.appID.get(q).toString());
-						addDel(la);
+			if(session.getAttribute("usertype")!=null){
+				if(Integer.parseInt(session.getAttribute("usertype").toString())==4){
+					if(session.getAttribute("userid")!=null){
+						int patId = Integer.parseInt(session.getAttribute("userid").toString());
+						if(patId == a.patientID.get(q)){
+							la.setStyle("color:blue");
+							la.setValue(la.getValue()+"[cancel]");
+							la.setId(a.appID.get(q).toString());
+							addDel(la);
+						}
 					}
+				}else if(Integer.parseInt(session.getAttribute("usertype").toString())==3){
+					la.setStyle("color:blue");
+					la.setValue(la.getValue()+"[cancel]");
+					la.setId(a.appID.get(q).toString());
+					addDel(la);
 				}
 			}
 			a.dates.remove(q);
