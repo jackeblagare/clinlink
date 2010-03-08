@@ -1,0 +1,87 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk>
+<window id ="ppro" title="Profile" border="normal"><zscript>
+<![CDATA[//@IMPORT
+        import clinlink.ViewProfile.*;
+ 		import org.zkoss.lang.Strings;
+ 		import java.sql.DriverManager;
+ 		import java.sql.*;
+ 		]]><![CDATA[//@DECLARATION
+ 		      //      public ResultSet rs;
+ 		      //  	public Connection con;
+ 		      //      public Statement st;
+ 		int msg=0;
+ 		int status;
+ 		int page = 0;
+ 		public int user_idd;
+ 		String excption;
+ 		//int usetype;
+ 	    //user u = new user();
+ 		PatientViewController vpc = new PatientViewController();
+     	public Patient i= new Patient();
+     	public void viewownmed()
+     	{
+     		Executions.sendRedirect("medrecview.zul");
+     	}
+  		public void requestViewProfile(){
+  			int usetype;
+  			int user_id=Integer.parseInt(patientId.getValue());
+			this.patient_id=user_id;
+			i=vpc.doViewProfile(user_id);	
+			//page = vpc.page;
+			//i=vpc.LoadProfile;	
+			patientId.setValue(Integer.toString(i.patient_id));
+			patientName.setValue(i.name);
+			Sex.setValue(i.sex);
+			Contact.setValue(i.contact);
+			PatientProfile.setVisible(true);
+			view.setVisible(false);
+			ViewAppointment.setVisible(true);
+			ViewAppointment.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
+				public void onEvent(Event event) throws Exception {
+					Executions.sendRedirect("doctorView.zul");
+				}
+			});
+			ViewRec.setVisible(true);
+  		}
+	    
+		]]><![CDATA[
+		    		
+		]]></zscript>
+<div id="PatientProfile" visible="false">
+<groupbox>
+<grid>
+<rows>
+<row> Patient ID :
+<textbox id="patientId" value="1" disabled="true"/>
+</row>
+<row>
+Patient Name :
+<textbox id="patientName"  disabled="true"/> 
+</row>
+<row>
+Sex : 
+<textbox id="Sex"  disabled="true"/>
+</row>
+<row>
+Contact : 
+<textbox id="Contact" disabled="true" />
+</row>
+
+</rows>
+
+</grid>
+</groupbox>
+</div>
+<button id="view" label="View Profile" onClick="requestViewProfile()"/>
+<div>
+<button id="ViewAppointment" visible="false" label="View Appointments" onClick=""/>
+</div>
+<div>
+<button id="ViewRec" visible="false" label="View Medical Record" onClick="viewownmed()"/>
+</div>
+<div>
+<button id="Logout" visible="true" label="Logout" onClick='session.invalidate();Executions.sendRedirect("index.zul")'/>
+</div>
+</window>
+</zk>
