@@ -1,0 +1,43 @@
+<?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
+<zk>
+<window id ="ppro" title="Profile" border="normal">
+
+<zscript>
+	<![CDATA[//@IMPORT
+	import clinlink.auth.*;
+	import clinlink.appointment.*;
+	import clinlink.ViewProfile.*;
+	import org.zkoss.lang.Strings;
+
+	]]><![CDATA[//@DECLARATION
+
+	            public void goback2()
+	            {
+	      
+	    		   			Executions.sendRedirect("searchmed.zul");
+	    	
+	            }  
+	
+				public void approve()
+				{
+						Executions.sendRedirect("approve.zul");
+				}
+	
+
+	
+
+	
+	]]><![CDATA[
+
+]]></zscript>
+
+<button label="View medical records" onClick="goback2()" />
+<space /><space /><space />
+<button label="approve requests" onClick="approve()" />
+<space /><space /><space />
+<div>
+<button id="Logout" visible="true" label="Logout" onClick='session.invalidate(); Executions.sendRedirect("index.zul")'/>
+</div>
+</window>
+</zk>
+
