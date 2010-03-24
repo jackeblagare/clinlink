@@ -13,15 +13,10 @@
     User u = new User();
     SearchController sc2 = new SearchController();
     Object[][] pat_id;
-    public void searchname()
+    
+    public void displayrecord()
     {
-    	if (session.getAttribute("userid") == null)
-    		Executions.sendRedirect ("index.zul");
-    	else{	int kat = Integer.parseInt(session.getAttribute("userid").toString());
-    	
-	    pat_id = sc2.doSearchMed(kat);	
-	  
-	  	Grid grid2 = new Grid();
+    	Grid grid2 = new Grid();
 		Columns col2 = new Columns();
 		Rows row2 = new Rows();
 		
@@ -71,23 +66,30 @@
 			   
 		   	}
 		   	Button but = new Button("Go");
-		  
 		   	row22.appendChild(but);
 		   	yy++;
 		   	row2.appendChild(row22);
 		  }
 		  
-		
 		grid2.appendChild(row2);
 		window2.appendChild(grid2);
+    }
+    
+    
+    public void searchname()
+    {
+    	if (session.getAttribute("userid") == null)
+    		Executions.sendRedirect ("index.zul");
+    	else
+    	{	
+    		int kat = Integer.parseInt(session.getAttribute("userid").toString());
+	    	pat_id = sc2.doSearchMed(kat);	
+	  		displayrecord();
+	  	
     	}
 	
     }
     
-	public void clear()
-	{
-		usertb.setValue("");
-	}
 	
 
 	

@@ -1,5 +1,8 @@
 package clinlink.cauc;
-//import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 import clinlink.cauc.User;
 import org.zkoss.zk.ui.Component;
@@ -14,6 +17,7 @@ public class CreateAccountUserController extends GenericForwardComposer{
 		Button Create;
 		Window main;
 		private String user = " ";
+		 public String excption= "";
 		private String name = " ";
 		private String license = " ";
 		private String spec = " ";
@@ -21,13 +25,21 @@ public class CreateAccountUserController extends GenericForwardComposer{
 		private String sex;
 		private String contact;
 		private String position;
+		private int id;
+        public ResultSet rs;
+        public Connection con1;
+        public Connection con2;
+        public Statement st;
+        public Statement st2;
+    
 		
 		private int usertype;
 		
 		public void doAfterCompose(Component comp) throws Exception {
 			super.doAfterCompose(comp);
 		}
-
+		
+		
 	public void doCreate(String user,String pwd,int usertype){
 		this.user=user;	
 		this.pwd=pwd;
@@ -40,21 +52,25 @@ public class CreateAccountUserController extends GenericForwardComposer{
 		else{
 			u.setUser(user);	
 			u.setPass(pwd);
-			u.setUserType(usertype);		
-			u.create();
-			alert("Complete the following informations!");
-			if(usertype == 2){
-			Executions.sendRedirect("doctor.zul");
-			}
-			else if(usertype == 3){
-			Executions.sendRedirect("staff.zul");
-			}
-			else if(usertype == 4){
-				Executions.sendRedirect("patient.zul");
+			u.setUserType(usertype);
+			
+				u.create();
+				if(usertype==1){
+					alert("Registration Complete!");	
+				}else
+					alert("Complete the following information!");
+					if(usertype == 2){
+						Executions.sendRedirect("createDoctor.zul");
+					}
+					else if(usertype == 3){
+						Executions.sendRedirect("createStaff.zul");
+					}
+					else if(usertype == 4){
+						Executions.sendRedirect("createPatient.zul");
+					}
 				}
-			System.out.println("nagredirect");
-		}
-	}
+			} 	
+
 	
 	public void doMoveDoc(String name,String license,String spec){
 		this.setName(name);	
@@ -64,32 +80,31 @@ public class CreateAccountUserController extends GenericForwardComposer{
 		User n = new User();
 		if(isValid2()==0){
 			alert("Please complete the necessary information!");
-			
 		}
 		else{
 			n.setUserName(name);	
 			n.setSpec(spec);
 			n.setUserLicense(license);		
-			n.move();
+			n.moveDoc();
 			alert("Registration Complete!");
 			alert("Wait for approval from the Administrator!");
 		}
 	}
 
-	public void doMovePatient(String name,String sex, String contact){
+	public void doMovePatient(String name,String sex,String contact){
 		this.setName(name);	
 		this.setSex(sex);
 		this.setContact(contact);
 		
 		User n = new User();
 		if(isValid3()==0){
-			alert("Please complete the necessary information!");
-			
+			alert("Please complete the necessary information!");			
 		}
 		else{
-			n.setUserName(name);	
-			n.setContact(contact);		
-			n.move();
+			n.setUserName(name);
+			n.setSex(sex);
+			n.setContact(contact);
+			n.movePatient();
 			alert("Registration Complete!");
 			alert("Wait for approval from the Administrator!");
 		}
@@ -97,17 +112,16 @@ public class CreateAccountUserController extends GenericForwardComposer{
 	
 	public void doMoveStaff(String name,String position){
 		this.setName(name);	
-		this.setPosition(position);
+		this.setPosition(position);	
 		
 		User n = new User();
 		if(isValid4()==0){
-			alert("Please complete the necessary information!");
-			
+			alert("Please complete the necessary information!");			
 		}
 		else{
 			n.setUserName(name);	
 			n.setPosition(position);	
-			n.move();
+			n.moveStaff();
 			alert("Registration Complete!");
 			alert("Wait for approval from the Administrator!");
 		}
@@ -187,5 +201,13 @@ public class CreateAccountUserController extends GenericForwardComposer{
 
 	public String getPosition() {
 		return position;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getId() {
+		return id;
 	}	
 }

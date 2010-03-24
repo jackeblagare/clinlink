@@ -15,7 +15,7 @@ public class ConsultationHour{
 	
     public void getSchedule(int doc){
     	try{
-    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
     		st= con.createStatement();
     		rs=st.executeQuery("select day, start, end from consultationhour where doctor_id="+doc+" order by day, start");
     		while(rs.next() != false){

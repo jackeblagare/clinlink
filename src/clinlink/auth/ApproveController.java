@@ -17,18 +17,16 @@ public class ApproveController extends GenericForwardComposer{
                 super.doAfterCompose(comp);
         }
 
-        public Object[][] doApprove(){
+        public Object[][] doRetrieve(){
         		
                 User2 u= new User2();
                 pat_id = u.approve();
-
                 return pat_id;
         }
         
         public void doApproveAccount(String username){
     		
             User2 u= new User2();
-            System.out.println("asa approve controller username = " + username);
             u.setUser(username);
             u.approveAccount();
     }
@@ -36,7 +34,6 @@ public class ApproveController extends GenericForwardComposer{
         public void doDenyAccount(String username){
     		
             User2 u= new User2();
-            System.out.println("asa approve controller username = " + username);
             u.setUser(username);
             u.denyAccount();
     }

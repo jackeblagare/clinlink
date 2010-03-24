@@ -29,7 +29,7 @@ public class Staff {
         	//int io=2;
         	con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
         	st= con.createStatement();
-        	rs=st.executeQuery("SELECT * from patient WHERE id="+user_id+"");
+        	rs=st.executeQuery("SELECT * from staff WHERE emp_id="+user_id+"");
         	//Patient p2=new Patient();
         	if(rs.next()){
         	s2.setEmpID(rs.getInt(2));

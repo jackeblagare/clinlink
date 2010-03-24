@@ -45,7 +45,7 @@ public class User{
     	
         try{ 
         	
-        	con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+        	con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
         	st= con.createStatement();
         	rs=st.executeQuery("select * from user where username='"+username+"' and type='"+usertype+"'");
             

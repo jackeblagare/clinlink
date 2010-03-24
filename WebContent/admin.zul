@@ -1,6 +1,6 @@
 <?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window id ="ppro" title="Profile" border="normal">
+<window id ="ppro" border="normal" title=" ">
 
 <zscript>
 	<![CDATA[//@IMPORT
@@ -9,12 +9,15 @@
 	import clinlink.ViewProfile.*;
 	import org.zkoss.lang.Strings;
 
+	
 	]]><![CDATA[//@DECLARATION
-
+		AdminViewController avc = new AdminViewController();
 	            public void goback2()
 	            {
-	      
-	    		   			Executions.sendRedirect("searchmed.zul");
+	            	
+	            	
+	      					avc.redirect();
+	    		   			
 	    	
 	            }  
 	
@@ -31,13 +34,20 @@
 
 ]]></zscript>
 
-<button label="View medical records" onClick="goback2()" />
-<space /><space /><space />
-<button label="approve requests" onClick="approve()" />
-<space /><space /><space />
-<div>
-<button id="Logout" visible="true" label="Logout" onClick='session.invalidate(); Executions.sendRedirect("index.zul")'/>
-</div>
+<menubar>
+	<menuitem label="View medical records" onClick="goback2()" />
+	<menuseparator />
+	<menuitem label="approve requests" onClick="approve()" />
+	<menuseparator />
+	<menuitem id="create" label="Create User" onClick='Executions.sendRedirect("createAccount.zul")'/>
+	<menuseparator />
+	<menuitem id="delete" label="Delete User" onClick='Executions.sendRedirect("deleteAccountUser.zul")'/>
+	<menuseparator />
+	<menuitem id="Logout" label="Logout" onClick='Executions.sendRedirect("logoutView.zul")'/>
+</menubar>
+
+a portal for doctors and patients to access information on personalized care
+
 </window>
 </zk>
 

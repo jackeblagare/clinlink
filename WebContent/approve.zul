@@ -1,12 +1,11 @@
 <?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window id="window1" border="normal" width="450px" apply="clinlink.auth.ApproveController" >
+<window id="window1" border="normal" apply="clinlink.auth.ApproveController" >
 
 <zscript>
 	<![CDATA[//@IMPORT
 	import clinlink.auth.*;
 	import org.zkoss.lang.Strings;
-
 	]]><![CDATA[//@DECLARATION
 
     User2 u = new User2();
@@ -16,18 +15,25 @@
     
     public void goback2()
     {
-    	//int kat = Integer.parseInt(session.getAttribute("userid").toString());
-    	//if (kat == 1)
-    		Executions.sendRedirect("admin.zul");
-    	//else if (kat ==2)
-    	//	Executions.sendRedirect("staff.zul");
+    	Executions.sendRedirect("searchmed.zul");
     }
     
-    public void approve()
+    public void approveaccount(Button but)
     {
-    	count++;
-	    pat_id = sc2.doApprove();
-	    if (count>1)
+		ApproveController ap3 = new ApproveController();
+		ap3.doApproveAccount(but.getAttribute("name").toString());
+		approve();   
+    }
+    
+    public void denyaccount(Button but2)
+    {
+		ApproveController ap = new ApproveController();
+   		ap.doDenyAccount(but2.getAttribute("name").toString());
+   		approve();
+    }
+    public void displaypending(int count)
+    {
+    	if (count>1)
 	    {
 	    	window1.removeChild(window1.getFirstChild());
 	    	if (window1.getLastChild()!=null)
@@ -35,7 +41,6 @@
 	    }
 
     	window1.removeChild(window2.getFirstChild());
-    	//window2.removeChild(window2.getFirstChild());
     	window1.setTitle("Approve");	
 	  
 	  	Grid grid2 = new Grid();
@@ -46,103 +51,108 @@
 		Column col23 = new Column("type");
 		Column col124 = new Column (""); 
 		Column col125 = new Column("");
-		Column col126 = new Column("");
-		Column col127 = new Column(" ");
 		
 		col2.appendChild(col22);
 		col2.appendChild(col23);
 		col2.appendChild(col124);
 		col2.appendChild(col125);
-		col2.appendChild(col126);
-		col2.appendChild(col127);
 		grid2.appendChild(col2);
-		int yy=0;
+		int yy=0;	   
 		   
-		   
-		   
-		  while(pat_id[yy][0].toString().equals("-1")== false)
-		  {		
-				int ii=0;
-				Row row22 = new Row();
+		while(pat_id[yy][0].toString().equals("-1")== false)
+		{		
+			int ii=0;
+			Row row22 = new Row();
 		   	for (ii=0; ii<2; ii++)
 		   	{
 		   		Label lab = new Label();
 		   		if (ii == 1)
 		   		{
-		   				if (Integer.parseInt(pat_id[yy][ii].toString()) == 1)
-		   					lab.setValue("admin");
-		   				else if (Integer.parseInt(pat_id[yy][ii].toString()) == 2)
-		   					lab.setValue("doctor");
-		   				else if (Integer.parseInt(pat_id[yy][ii].toString()) == 3)
-		   					lab.setValue("staff");
-		   				else if (Integer.parseInt(pat_id[yy][ii].toString()) == 4)
-		   					lab.setValue("patient");
+	   				if (Integer.parseInt(pat_id[yy][ii].toString()) == 1)
+	   					lab.setValue("admin");
+	   				else if (Integer.parseInt(pat_id[yy][ii].toString()) == 2)
+	   					lab.setValue("doctor");
+	   				else if (Integer.parseInt(pat_id[yy][ii].toString()) == 3)
+	   					lab.setValue("staff");
+	   				else if (Integer.parseInt(pat_id[yy][ii].toString()) == 4)
+	   					lab.setValue("patient");
 		   		}
-		   		else{
-		   			lab.setValue(pat_id[yy][ii].toString());}
+		   		else
+		   		{
+		   			lab.setValue(pat_id[yy][ii].toString());
+		   		}
 		   		
 				row22.appendChild(lab);
 			   
 		   	}
-		   	Button but = new Button(pat_id[yy][0].toString());
-		   	Button but2 = new Button (pat_id[yy][0].toString());
-		   	but2.setStyle("color:white");
-		   	but.setStyle("color: white");
+	   		Button but = new Button("Approve");
+		   	Button but2 = new Button ("Deny");
+		   	but.setAttribute("name", pat_id[yy][0].toString());
+			but2.setAttribute("name", pat_id[yy][0].toString());
 		   	but.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
 		   		public void onEvent(Event event) throws Exception {
-		   			ApproveController ap3 = new ApproveController();
-		   			ap3.doApproveAccount(but.getLabel());
-		   			approve();
-		   		}
-		   		});
+		   			approveaccount(but);
+		
+		   	}});
+		   	
 			but2.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
 		   		public void onEvent(Event event) throws Exception {
-		   			ApproveController ap = new ApproveController();
-		   			ap.doDenyAccount(but2.getLabel());
-		   			approve();
-		   		}
-		   		});
+		   			denyaccount(but2);
+		   	}});
 		  
 		   	row22.appendChild(but);
-		   	Label lab2 = new Label();
-		   	lab2.setValue("Approve");
-		   	row22.appendChild(lab2);
-		   	Label lab22 = new Label("Deny");
+		   	Label lab2 = new Label(); 
 		   	row22.appendChild(but2);
-		   	row22.appendChild(lab22);
 		   	yy++;
 		   	row2.appendChild(row22);
-		  }
+		}
 		  
-		  Row row33 = new Row();
+		Row row33 = new Row();
 		Button but2 = new Button("Go Back");
-	   	but2.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
-	   		public void onEvent(Event event) throws Exception {
-	   			Executions.sendRedirect("admin.zul");
-	   		}
-	   		});
-	   	row33.appendChild(but2);
-	   	row2.appendChild(row33);
+			but2.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
+		  		public void onEvent(Event event) throws Exception {
+		  			Executions.sendRedirect("admin.zul");
+		  	}});
+		row33.appendChild(but2);
+		row2.appendChild(row33);
 		grid2.appendChild(row2);
 		window1.appendChild(grid2);
-		
-	
     }
-
-	
-
-	
-	]]><![CDATA[
+    
+    
+    public void approve()
+    {
+    	if (session.getAttribute("userid") == null)
+    		Executions.sendRedirect ("index.zul");
+    	else
+    	{
+    		count++;
+	    	pat_id = sc2.doRetrieve();
+	    	displaypending(count);
+    	}    
+    }
+]]><![CDATA[
 
 ]]></zscript>
-<div id="loginDiv" onCreate="approve()">
 
+<menubar>
+	<menuitem label="View Profile" onClick='Executions.sendRedirect("admin.zul")'/>
+	<menuseparator />
+	<menuitem label="View medical records" onClick="goback2()" />
+	<menuseparator />
+	<menuitem id="create" label="Create User" onClick='Executions.sendRedirect("createAccount.zul")'/>
+	<menuseparator />
+	<menuitem id="delete" label="Delete User" onClick='Executions.sendRedirect("deleteAccountUser.zul")'/>
+	<menuseparator />
+	<menuitem id="Logout" label="Logout" onClick='Executions.sendRedirect("logoutView.zul")'/>
+</menubar>
+<space/>
+<div id="loginDiv" onCreate="approve()">
 </div>
 </window>
 <space /><space /><space />
 <window id="window2">
 <div id="div2"></div>
-
 </window>
 </zk>
 

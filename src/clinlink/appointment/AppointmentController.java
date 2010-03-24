@@ -1,6 +1,7 @@
 package clinlink.appointment;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 
 public class AppointmentController extends GenericForwardComposer{
@@ -14,9 +15,9 @@ public class AppointmentController extends GenericForwardComposer{
 		super.doAfterCompose(comp);
 	}
 	
-	public void getScheduledAppointment(Appointment app, ConsultationHour ch, int doc){
+	public void getScheduledAppointment(Appointment app, ConsultationHour ch, int doc, String sun, String sat){
 		ch.getSchedule(doc);
-		app.getAppointment(doc);
+		app.getAppointment(doc,sun,sat);
 		//displayAppointment();
 	}
 	
@@ -27,15 +28,24 @@ public class AppointmentController extends GenericForwardComposer{
 	public int cancelAppointment(Appointment app, int appID){
 		return app.deleteAppointment(appID);
 	}
-	public boolean isValid(String patname, String d_id, String date, String time, String reason){
-		if((patname!=null)&&(d_id!=null)&&(date!=null)&&(time!=null)&&(reason!=null)){
-			return true;
+	public boolean isValid(String patname, int selected, String d_id, String date, String time, String reason){
+		if(selected != -1){
+			if((patname!=null)&&(d_id!=null)&&(date!=null)&&(time!=null)&&(reason!=null)&&(patname!="")&&(d_id!="")&&(date!="")&&(time!="")){
+				return true;
+			}
 		}else{
-			return false;
+			if((patname!=null)&&(d_id!=null)&&(date!=null)&&(time!=null)&&(reason!=null)&&(d_id!="")&&(date!="")&&(time!="")&&(reason!="")){
+				return true;
+			}
 		}
+		return false;
 	}
 	
 	public void getPatientAppointment(Appointment a, int doc, int pat){
 		a.getPatApp(doc, pat);
+	}
+	
+	public void redirect(){
+		Executions.sendRedirect("appointmentView.zul");
 	}
 }

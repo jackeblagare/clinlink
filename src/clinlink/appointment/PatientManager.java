@@ -14,9 +14,9 @@ public class PatientManager{
 	
 	public void getAllPatients(){
 		try{
-    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
     		st= con.createStatement();
-    		rs=st.executeQuery("select id, name from patient");
+    		rs=st.executeQuery("select id, name from patient where id>0 order by name");
     		while(rs.next() != false){
     			id.add(rs.getInt(1));
     			patients.add(rs.getString(2));
@@ -36,7 +36,7 @@ public class PatientManager{
 	public String getName(int p_id){
 		String name="";
 		try{
-    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
     		st= con.createStatement();
     		rs=st.executeQuery("select name from patient where id="+p_id);
     		while(rs.next() != false){
