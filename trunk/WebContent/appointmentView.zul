@@ -39,7 +39,7 @@
 		ConsultationHour ch = new ConsultationHour();
 		PatientManager pm = new PatientManager();
 		
-		public void requestViewAppointment(){
+		public void requestViewAppointment(String now, String datetoday){
 			if(session.getAttribute("usertype")!=null){
 				int ut = Integer.parseInt(session.getAttribute("usertype").toString());
 				if((ut == 3) || (ut == 4)){
@@ -48,11 +48,43 @@
 					mb.appendChild(ms); mb.appendChild(mi);
 				}
 			}
-			ac.getScheduledAppointment(a, ch, doc);
-			displayAppointment();
+			Calendar c = Calendar.getInstance();
+			String sun, sat;
+			int year = Integer.parseInt(now.substring(0,4));
+			int month = Integer.parseInt(now.substring(5,7)); month--;
+			int day = Integer.parseInt(now.substring(8,10));
+			c.set(year, month, day);
+			if(c.get(c.DAY_OF_WEEK) != Calendar.SUNDAY){
+				c.set(c.DAY_OF_WEEK, Calendar.SUNDAY);
+			}
+			sun = setDate(c);
+			c.set(c.DAY_OF_WEEK, Calendar.SATURDAY);
+			sat = setDate(c);
+			a.appDate.clear();a.appID.clear();a.dates.clear();a.patientID.clear();
+			a.patients.clear();a.reasons.clear();a.times.clear();
+			ac.getScheduledAppointment(a, ch, doc, sun, sat);
+			displayAppointment(sun, datetoday);
 		}
 		
-		public void displayAppointment(){
+		private String setDate(Calendar c){
+			String variable;
+			if((c.get(Calendar.MONTH)+1) < 10){
+				if(c.get(Calendar.DATE) < 10){
+					variable = c.get(Calendar.YEAR)+"-0"+(c.get(Calendar.MONTH)+1)+"-0"+c.get(Calendar.DATE);
+				}else{
+					variable = c.get(Calendar.YEAR)+"-0"+(c.get(Calendar.MONTH)+1)+"-"+c.get(Calendar.DATE);
+				}
+			}else{
+				if(c.get(Calendar.DATE) < 10){
+					variable = c.get(Calendar.YEAR)+"-"+(c.get(Calendar.MONTH)+1)+"-0"+c.get(Calendar.DATE);
+				}else{
+					variable = c.get(Calendar.YEAR)+"-"+(c.get(Calendar.MONTH)+1)+"-"+c.get(Calendar.DATE);
+				}
+			}
+			return variable;
+		}
+		
+		public void displayAppointment(String sunday, String datetoday){
 			this.page.setTitle("View Appointment - "+doc_name);
 			if((session.getAttribute("usertype")!=null)&&(Integer.parseInt(session.getAttribute("usertype").toString())==4)){
 				if(session.getAttribute("userid")!=null){
@@ -61,25 +93,22 @@
 			}
 			make.setVisible(false); win1.setVisible(true);
 			Calendar cal = Calendar.getInstance();
+			int year = Integer.parseInt(sunday.substring(0,4));
+			int month = Integer.parseInt(sunday.substring(5,7)); month--;
+			int day = Integer.parseInt(sunday.substring(8,10));
+			cal.set(year, month, day);
+			addPrev(prev1, cal, year, month, day); addPrev(prev2, cal, year, month, day);
+			addNext(next1, cal, year, month, day); addNext(next2, cal, year, month, day);
 			String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
 			Integer[] days = new Integer[7]; String[] weekday = new String[7]; String[] comp = new String[7];
 			for(int n=0; n<7; n++){
-				cal.set(Calendar.DAY_OF_WEEK, n+1); days[n] = cal.get(Calendar.DATE);
-				weekday[n] = months[cal.get(Calendar.MONTH)]+" "+days[n];
-				if((cal.get(Calendar.MONTH)+1) < 10){
-					if(days[n] < 10){
-						comp[n] = cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-0"+days[n];
-					}else{
-						comp[n] = cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-"+days[n];
-					}
-				}else{
-					if(days[n] < 10){
-						comp[n] = cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-0"+days[n];
-					}else{
-						comp[n] = cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+days[n];
-					}
+				if(n!=0){
+					cal.set(Calendar.DAY_OF_WEEK, n+1);
 				}
+				days[n] = cal.get(Calendar.DATE);
+				weekday[n] = months[cal.get(Calendar.MONTH)]+" "+days[n];
+				comp[n] = setDate(cal);
 			}
 			sun.setLabel(sun.getLabel()+":"+weekday[0]);
 			mon.setLabel(mon.getLabel()+":"+weekday[1]);
@@ -119,6 +148,8 @@
 				row.appendChild(l1);
 				for(int k=1; k<8; k++){
 					Label la = new Label();
+					Label lb = new Label();
+					Vbox vb = new Vbox();
 					if(ch.day.contains(k)){
 						index = ch.day.indexOf(k);
 						if(j%2 == 0){
@@ -129,7 +160,7 @@
 									int q = a.dates.indexOf(comp[k-1]);
 									String app=a.times.get(q).substring(0,5);
 									if(app.equalsIgnoreCase(b)){
-										displayPatName(la, q);
+										displayPatName(la, lb, q);
 									}else{
 										displayMake(la, b, comp, k);
 									}
@@ -152,7 +183,7 @@
 									int q = a.dates.indexOf(comp[k-1]);
 									String app=a.times.get(q).substring(0,5);
 									if(app.equalsIgnoreCase(b)){
-										displayPatName(la, q);
+										displayPatName(la, lb, q);
 									}else{
 										displayMake(la, b, comp, k);
 									}
@@ -171,30 +202,43 @@
 					}else{
 						la.setValue("");
 					}
-					row.appendChild(la);
+					vb.appendChild(la);
+					vb.appendChild(lb);
+					row.appendChild(vb);
 				}
 				rr.appendChild(row);
 			}
 		}
 		
-		private void displayPatName(Label la, int q){
-			la.setValue(a.patients.get(q)+" ("+a.reasons.get(q)+")");
+		private void displayPatName(Label la, Label lb, int q){
+			la.setValue(a.patients.get(q));
+			la.setTooltiptext("reason: "+a.reasons.get(q));
 			if(session.getAttribute("usertype")!=null){
 				if(Integer.parseInt(session.getAttribute("usertype").toString())==4){
 					if(session.getAttribute("userid")!=null){
 						int patId = Integer.parseInt(session.getAttribute("userid").toString());
 						if(patId == a.patientID.get(q)){
-							la.setStyle("color:blue");
-							la.setValue(la.getValue()+"[cancel]");
-							la.setId(a.appID.get(q).toString());
-							addDel(la);
+							if((session.getAttribute("today")!=null)&&(session.getAttribute("today").toString().compareTo(a.dates.get(q))>-1)){
+								
+							}
+							else{
+								lb.setStyle("color:blue");
+								lb.setValue("[cancel]");
+								lb.setId(a.appID.get(q).toString());
+								addDel(lb);
+							}
 						}
 					}
 				}else if(Integer.parseInt(session.getAttribute("usertype").toString())==3){
-					la.setStyle("color:blue");
-					la.setValue(la.getValue()+"[cancel]");
-					la.setId(a.appID.get(q).toString());
-					addDel(la);
+					if((session.getAttribute("today")!=null)&&(session.getAttribute("today").toString().compareTo(a.dates.get(q))>-1)){
+						
+					}
+					else{
+						lb.setStyle("color:blue");
+						lb.setValue("[cancel]");
+						lb.setId(a.appID.get(q).toString());
+						addDel(lb);
+					}
 				}
 			}
 			a.dates.remove(q);
@@ -213,23 +257,89 @@
 			});
 		}
 		
-		private void requestDeleteAppointment(Label l){
+		private void addPrev(Button p, Calendar cal, int year, int month, int day){
+			p.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
+				public void onEvent(Event event) throws Exception {
+					cal.set(year, month, day);
+					cal.set(Calendar.DATE, day-7);
+					move(cal);
+				}
+			});
+		}
+		
+		private void addNext(Button n, Calendar cal, int year, int month, int day){
+			n.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
+				public void onEvent(Event event) throws Exception {
+					cal.set(year, month, day);
+					cal.set(Calendar.DATE, day+7);
+					move(cal);
+				}
+			});
+		}
+		
+		private void move(Calendar cal){
+			if((cal.get(Calendar.MONTH)+1) < 10){
+				if(cal.get(Calendar.DATE) < 10){
+					session.setAttribute("dateNow",(cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE)));
+				}else{
+					session.setAttribute("dateNow",(cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE)));
+				}
+			}else{
+				if(cal.get(Calendar.DATE) < 10){
+					session.setAttribute("dateNow",(cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE)));
+				}else{
+					session.setAttribute("dateNow",(cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE)));
+				}
+			}
+			Executions.sendRedirect("appointmentView.zul");
+		}
+		
+		private void requestDeleteAppointment(Label l) throws Exception{
 			try{
 				if(Messagebox.show("Are you sure you want to cancel this appointment?","Cancel",Messagebox.YES|Messagebox.NO,Messagebox.QUESTION) == Messagebox.YES){
-					if(ac.cancelAppointment(a, Integer.parseInt(l.getId())) == 0){
-						alert("Appointment successfully deleted.");
-						Executions.sendRedirect("appointmentView.zul");
-					}else{
-						Messagebox.show("Unable to delete appointment.","Error",Messagebox.OK,Messagebox.ERROR);
-					}
+					displayMessage(ac.cancelAppointment(a, Integer.parseInt(l.getId())));
 				}
 			}catch(Exception e){
-				alert(e.toString());
+				Messagebox.show("An error occurred: "+e.toString(),"Error",Messagebox.OK,Messagebox.ERROR);
+			}
+		}
+		
+		private void displayMessage(int cancelled) throws Exception{
+			try{
+				if(cancelled == 0){
+					alert("Appointment successfully deleted.");
+					Executions.sendRedirect("appointmentView.zul");
+				}else{
+					Messagebox.show("Unable to delete appointment.","Error",Messagebox.OK,Messagebox.ERROR);
+				}
+			}catch(Exception e){
+				Messagebox.show("An error occurred: "+e.toString(),"Error",Messagebox.OK,Messagebox.ERROR);
 			}
 		}
 		
 		private void displayMake(Label la, String b, String[] comp, int k){
-			if((session.getAttribute("usertype")!=null)&&((Integer.parseInt(session.getAttribute("usertype").toString())==3)||(Integer.parseInt(session.getAttribute("usertype").toString())==4))){
+			Calendar c = Calendar.getInstance();
+			String timeNow;
+			if(c.get(Calendar.HOUR_OF_DAY) < 10){
+				if(c.get(Calendar.MINUTE) < 10){
+					timeNow = "0"+c.get(Calendar.HOUR_OF_DAY)+":0"+c.get(Calendar.MINUTE)+":00";
+				}else{
+					timeNow = "0"+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE)+":00";
+				}
+			}else{
+				if(c.get(Calendar.MINUTE) < 10){
+					timeNow = c.get(Calendar.HOUR_OF_DAY)+":0"+c.get(Calendar.MINUTE)+":00";
+				}else{
+					timeNow = c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE)+":00";
+				}
+			}
+			if((session.getAttribute("today")!=null)&&(session.getAttribute("today").toString().compareTo(comp[k-1])>0)){
+				la.setValue("-----");
+			}
+			else if((session.getAttribute("today")!=null)&&(session.getAttribute("today").toString().equals(comp[k-1]))&&(timeNow.compareTo(b)>-1)){
+				la.setValue("-----");
+			}
+			else if((session.getAttribute("usertype")!=null)&&((Integer.parseInt(session.getAttribute("usertype").toString())==3)||(Integer.parseInt(session.getAttribute("usertype").toString())==4))){
 				la.setValue("make");
 				int type = Integer.parseInt(session.getAttribute("usertype").toString());
 				if((type==3)||((a.appDate.size()>0) && (a.appDate.contains(comp[k-1])==false))){
@@ -264,37 +374,41 @@
 			this.page.setTitle("Make Appointment - "+doc_name);
 			String s = l.getId().toString();
 			String[] q = s.split(",");
-			Vbox v1 = new Vbox(); Combobox c1 = new Combobox(); c1.setAutodrop(true);
+			Hbox v1 = new Hbox(); Combobox c1 = new Combobox(); c1.setAutodrop(true);
+			c1.setAutocomplete(true);
+			Checkbox check = new Checkbox("Patient has no account yet.");
+			check.setId("mych");
+			check.addEventListener("onCheck", new org.zkoss.zk.ui.event.EventListener(){
+				public void onEvent(Event event) throws Exception{
+					try{
+						if(check.isChecked() == true){
+							c1.setValue("");
+							c1.setDisabled(true);
+							check.setLabel(check.getLabel() + " Please include patient's name in reason.");
+						}else{
+							c1.setDisabled(false);
+							check.setLabel("Patient has no account yet.");
+						}
+					}catch(Exception e){
+						
+					}
+				}
+			});
+			
 			Button b1= new Button("Add"); Button b2 = new Button("Cancel");
 			b1.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
 				public void onEvent(Event event) throws Exception {
 					try{
-					if(ac.isValid(c1.getValue(), t2.getValue(), t3.getValue(), t4.getValue(), t5.getValue())){
+					if(ac.isValid(c1.getValue(), c1.getSelectedIndex(), t2.getValue(), t3.getValue(), t4.getValue(), t5.getValue())){
 					if(q.length == 4){
-						int success = ac.makeAppointment(a, c1.getValue(), Integer.parseInt(q[3]), doc, q[1], q[0], t5.getValue());
-						if(success == 0){
-							alert("Appointment successfully made.");
-						}else if(success == 1){
-							Messagebox.show("Unable to schedule appointment. Please select another date and time slot.","Error",Messagebox.OK,Messagebox.ERROR);
-						}else{							
-							Messagebox.show(c1.getValue()+" already has an appointment with "+doc_name,"Error",Messagebox.OK,Messagebox.ERROR);
-						}
-						Executions.sendRedirect("appointmentView.zul");
+						displaySuccessfulMakeAppointment(ac.makeAppointment(a, c1.getValue(), Integer.parseInt(q[3]), doc, q[1], q[0], t5.getValue()), c1.getValue());
 					}else{
 						int tempid = pm.patients.indexOf(c1.getValue());
 						if(tempid != -1){
-							int success = ac.makeAppointment(a, pm.patients.get(tempid), pm.id.get(tempid), doc, q[1], q[0], t5.getValue());
-							if(success == 0){
-								alert("Appointment successfully made.");
-							}else if(success == 1){
-								Messagebox.show("Unable to schedule appointment. Please select another date and time slot.","Error",Messagebox.OK,Messagebox.ERROR);
-							}else{
-								Messagebox.show(pm.patients.get(tempid)+" already has an appointment with "+doc_name,"Error",Messagebox.OK,Messagebox.ERROR);
-							}
-							Executions.sendRedirect("appointmentView.zul");
+							displaySuccessfulMakeAppointment(ac.makeAppointment(a, pm.patients.get(tempid), pm.id.get(tempid), doc, q[1], q[0], t5.getValue()),pm.patients.get(tempid));
 						}else{
-							//ac.makeAppointment(a, c1.getValue(), -1, doc, q[1], q[0], t5.getValue());
-							Messagebox.show("Sorry, feature not yet supported.","Error",Messagebox.OK,Messagebox.ERROR);
+							ac.makeAppointment(a, c1.getValue(), -1, doc, q[1], q[0], t5.getValue());
+							//Messagebox.show("Sorry, feature not yet supported.","Error",Messagebox.OK,Messagebox.ERROR);
 							Executions.sendRedirect("appointmentView.zul");
 						}
 					}
@@ -316,12 +430,29 @@
 				ListModel lm = new SimpleListModel(names);
 				c1.setModel(lm);
 			}
-			v1.appendChild(c1); r1.appendChild(v1);
+			v1.appendChild(c1); v1.appendChild(check); r1.appendChild(v1);
 			t2.setText(q[2]); t3.setText(q[1]); t4.setText(q[0]); t5.setMaxlength(100);	
 			r2.appendChild(t2); r3.appendChild(t3); r4.appendChild(t4);
 			make.setVisible(true); win1.setVisible(false);
 		}
-	
+		
+		private void displaySuccessfulMakeAppointment(int success, String patName) throws Exception{
+			try{
+				if(success == 0){
+					alert("Appointment successfully made.");
+				}else if(success == 1){
+					Messagebox.show("Unable to schedule appointment. Please select another date and time slot.","Error",Messagebox.OK,Messagebox.ERROR);
+				}else if(success == -1){							
+					Messagebox.show(patName+" already has an appointment with "+doc_name,"Error",Messagebox.OK,Messagebox.ERROR);
+				}else if(success == -2){
+					Messagebox.show(patName+" already has an appointment with "+a.docName+" on the same day and time","Error",Messagebox.OK,Messagebox.ERROR);
+				}
+				Executions.sendRedirect("appointmentView.zul");
+			}catch(Exception e){
+				Messagebox.show("An error occurred: "+e.toString(),"Error",Messagebox.OK,Messagebox.ERROR);
+			}
+		}
+		
 		private void viewProfile(){
 			if(session.getAttribute("usertype")!=null){
 				int id = Integer.parseInt(session.getAttribute("usertype").toString());
@@ -344,7 +475,6 @@
 	<menuitem label="Profile" onClick="viewProfile()"/>
 	<menuitem label="Logout" onClick='session.invalidate(); Executions.sendRedirect("/")'/>
 </menubar>
-
 <div id="make" visible="false">
 <separator/>
 <grid>
@@ -381,9 +511,19 @@
 	</rows>
 </grid>
 </div>
-
-<div id="win1" onCreate="requestViewAppointment()">
+<div>
+</div>
+<div id="win1" onCreate='if(session.getAttribute("dateNow")!=null){
+if(session.getAttribute("today")!=null){
+	String dateToday = session.getAttribute("dateNow").toString();
+	String realtoday = session.getAttribute("today").toString();
+	requestViewAppointment(dateToday, realtoday);
+}}
+else{viewProfile();}'>
 <separator/>
+<button id="prev1" label="prev"/>
+<label value="Mouse-over to patient's name to see consultation reason." style="text-align:center"/>
+<button id="next1" label="next"/>
 	<grid id="g">
 		<columns id="c">
 			<column label="Time" width="12.5%"/>
@@ -398,7 +538,8 @@
 		<rows id="rr">
 		</rows>
 	</grid>
+<button id="prev2" label="prev"/>
+<button id="next2" label="next"/>	
 </div>
 </div>
-
 </zk>

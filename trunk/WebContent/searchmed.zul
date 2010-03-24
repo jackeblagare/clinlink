@@ -1,6 +1,6 @@
 <?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window id="window1" border="normal" width="450px" title="Login" apply="clinlink.auth.LoginController" >
+<window id="window1" border="normal" title=" " apply="clinlink.auth.LoginController" >
 
 <zscript>
 	<![CDATA[//@IMPORT
@@ -16,41 +16,106 @@
     Object[][] pat_id;
     public void goback()
     {
-    	//int kat = Integer.parseInt(session.getAttribute("userid").toString());
-    	//if (kat == 1)
-    		Executions.sendRedirect("admin.zul");
-    	//else if (kat ==2)
-    	//	Executions.sendRedirect("staff.zul");
-    }
-    public void searchname()
-    {
+    	int kat = Integer.parseInt(session.getAttribute("usertype").toString());
     	
-	    pat_id = sc2.doSearch(usertb.getValue());
-    //Executions.sendRedirect("print.zul");
-    window2.removeChild(window2.getFirstChild());
-    window3.setVisible(false);
-    window2.setTitle("name");	
-	  
-	  Grid grid2 = new Grid();
+    	if (kat == 1)
+    		Executions.sendRedirect("admin.zul");
+    	else if (kat ==3)
+    		Executions.sendRedirect("staff.zul");
+    }
+    
+    
+    public void displayrecord(Object[][] pat_id2)
+    {
+	   	Grid grid2 = new Grid();
 		Columns col2 = new Columns();
 		Rows row2 = new Rows();
 		
-		Column col22 = new Column("Names");
-		//col22.setLabel("Names");
-		Column col23 = new Column("ID");
-		//col23.setLabel("ID");
-		Column col124 = new Column (""); 
-		Column col125 = new Column("");
-		
+		Column col22 = new Column("Pat ID");
+		Column col23 = new Column("Record ID");
+		Column col24 = new Column ("Date adm");
+		Column col25 = new Column("Date rel");
+		Column col26 = new Column("class");
+		Column col27 = new Column ("dob");
+		Column col28 = new Column("time adm");
+		Column col29 = new Column("time rel");
+		Column col210 = new Column ("doctor id");	
+		Column col211 = new Column("height");
+		Column col212 = new Column("weight");
+		Column col213 = new Column ("diagnosis");
+		Column col214 = new Column ("age");
+		Column col215 = new Column (" ");
+	
 		col2.appendChild(col22);
 		col2.appendChild(col23);
-		col2.appendChild(col124);
-		col2.appendChild(col125);
+		col2.appendChild(col24);
+		col2.appendChild(col25);
+		col2.appendChild(col26);
+		col2.appendChild(col27);
+		col2.appendChild(col28);
+		col2.appendChild(col29);
+		col2.appendChild(col210);
+		col2.appendChild(col211);
+		col2.appendChild(col212);
+		col2.appendChild(col213);
+		col2.appendChild(col214);
+		col2.appendChild(col215);
 		grid2.appendChild(col2);
 		int yy=0;
 		   
-		   
-		   
+		while(pat_id2[yy][0].toString().equals("-1")== false)
+		{		
+			int ii=0;
+			Row row22 = new Row();
+		  	for (ii=0; ii<13; ii++)
+		  	{
+		  		Label lab = new Label();
+				lab.setValue(pat_id2[yy][ii].toString());
+				row22.appendChild(lab);
+		  	}
+		  	yy++;
+		  	row2.appendChild(row22);
+		 }  
+		grid2.appendChild(row2);
+		window3.appendChild(grid2);
+    }
+    
+    
+    public void viewmedrec2(Button but)
+    {
+		window3.removeChild(window3.getFirstChild());
+		window3.setVisible(true);
+		SearchController sc3 = new SearchController();
+		Object[][] pat_id2;
+		String tem = but.getAttribute("name").toString();
+		int temp2 = Integer.parseInt(tem);
+		pat_id2 = sc3.doSearchMed(temp2);	
+		displayrecord(pat_id2);
+ 	}
+    
+    
+    public void displaymatched()
+    {
+    	 window2.removeChild(window2.getFirstChild());
+    	 window3.setVisible(false);
+    	 window2.setTitle("name");	
+    		  
+		 Grid grid2 = new Grid();
+ 		 Columns col2 = new Columns();
+ 		 Rows row2 = new Rows();
+ 			
+ 		 Column col22 = new Column("Names");
+ 	   	 Column col23 = new Column("ID");
+ 		 Column col124 = new Column (""); 
+ 			
+ 		 col2.appendChild(col22);
+ 		 col2.appendChild(col23);
+ 	 	 col2.appendChild(col124);
+ 	 	 grid2.appendChild(col2);
+ 		 int yy=0;
+    			   
+    			   
+    			   
 		  while(pat_id[yy][0].toString().equals("-1")== false)
 		  {		
 				int ii=0;
@@ -62,92 +127,30 @@
 				row22.appendChild(lab);
 			   
 		   	}
-		   	Button but = new Button(pat_id[yy][1].toString());
-		  	but.setStyle("color: white");
+		   	Button but = new Button("View Medical Record");
+		   	but.setAttribute("name", pat_id[yy][1].toString());
 		    but.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
 		    	public void onEvent(Event event) throws Exception {
-		    		 window3.removeChild(window3.getFirstChild());
-		    		 window3.setVisible(true);
-		    	SearchController sc3 = new SearchController();
-		    	Object[][] pat_id2;
-		    	String tem = but.getLabel();
-		    	int temp2 = Integer.parseInt(tem);
-		    		pat_id2 = sc3.doSearchMed(temp2);	
-		    		  
-		    	  	Grid grid2 = new Grid();
-		    		Columns col2 = new Columns();
-		    		Rows row2 = new Rows();
-		    		
-		    		Column col22 = new Column("Pat ID");
-		    		Column col23 = new Column("Record ID");
-		    		Column col24 = new Column ("Date adm");
-		    		Column col25 = new Column("Date rel");
-		    		Column col26 = new Column("class");
-		    		Column col27 = new Column ("dob");
-		    		Column col28 = new Column("time adm");
-		    		Column col29 = new Column("time rel");
-		    		Column col210 = new Column ("doctor id");	
-		    		Column col211 = new Column("height");
-		    		Column col212 = new Column("weight");
-		    		Column col213 = new Column ("diagnosis");
-		    		Column col214 = new Column ("age");
-		    		Column col215 = new Column (" ");
-		    	
-		    		col2.appendChild(col22);
-		    		col2.appendChild(col23);
-		    		col2.appendChild(col24);
-		    		col2.appendChild(col25);
-		    		col2.appendChild(col26);
-		    		col2.appendChild(col27);
-		    		col2.appendChild(col28);
-		    		col2.appendChild(col29);
-		    		col2.appendChild(col210);
-		    		col2.appendChild(col211);
-		    		col2.appendChild(col212);
-		    		col2.appendChild(col213);
-		    		col2.appendChild(col214);
-		    		col2.appendChild(col215);
-		    		grid2.appendChild(col2);
-		    		int yy=0;
-		    		   
-		    		   
-		    		   
-		    		  while(pat_id2[yy][0].toString().equals("-1")== false)
-		    		  {		
-		    				int ii=0;
-		    				Row row22 = new Row();
-		    		   	for (ii=0; ii<13; ii++)
-		    		   	{
-		    		   		Label lab = new Label();
-		    				lab.setValue(pat_id2[yy][ii].toString());
-		    				row22.appendChild(lab);
-		    			   
-		    		   	}
-		    		   
-		    		   	yy++;
-		    		   	row2.appendChild(row22);
-		    		  }
-		    		  
-		    		
-		    		grid2.appendChild(row2);
-		    		window3.appendChild(grid2);
-		    		
-		    	
+		    		viewmedrec2(but);
 		    	}
 		    	});
 		   	row22.appendChild(but);
 		   	Label lab2 = new Label();
-			lab2.setValue("click to view");
-			row22.appendChild(lab2);
 		   	yy++;
 		   	row2.appendChild(row22);
 		  }
-		  
-		
-		grid2.appendChild(row2);
-		window2.appendChild(grid2);
-		
-	
+			  
+    			
+    	grid2.appendChild(row2);
+    	window2.appendChild(grid2);
+    }
+    
+    
+    
+    public void searchname()
+    {
+	    pat_id = sc2.doSearch(usertb.getValue());    
+	    displaymatched();	
     }
     
 	public void clear()
@@ -155,17 +158,37 @@
 		usertb.setValue("");
 	}
 	
+	public void test()
+	{
+		if (session.getAttribute("userid") == null)
+    		Executions.sendRedirect ("index.zul");
+	}
 
 	
 	]]><![CDATA[
 
 ]]></zscript>
-<div id="loginDiv">
+
+
+<menubar>
+	<menuitem label="View Profile" onClick='Executions.sendRedirect("admin.zul")'/>
+	<menuseparator />
+	<menuitem label="approve requests" onClick='Executions.sendRedirect("approve.zul")' />
+	<menuseparator />
+	<menuitem id="create" label="Create User" onClick='Executions.sendRedirect("createAccount.zul")'/>
+	<menuseparator />
+	<menuitem id="delete" label="Delete User" onClick='Executions.sendRedirect("deleteAccountUser.zul")'/>
+	<menuseparator />
+	<menuitem id="Logout" label="Logout" onClick='Executions.sendRedirect("logoutView.zul")'/>
+</menubar>
+<space/>
+
+<div id="loginDiv" onCreate="test()">
 <grid>
 	<rows>
 		<row>
 			Patient's Name :
-			<textbox id="usertb" width="230px" value="" />
+			<textbox id="usertb" width="500px" value="" />
 		</row>
 	</rows>
 </grid>
@@ -180,7 +203,7 @@
 
 </window>
 <space /><space /><space />
-<window id="window2">
+<window id="window2" >
 <div id="div2"></div>
 </window>
 <space /> <space /> <space />

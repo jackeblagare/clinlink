@@ -2,6 +2,7 @@
 package clinlink.ViewProfile;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.lang.Strings;
 
@@ -21,6 +22,11 @@ public class StaffViewController extends GenericForwardComposer{
 		super.doAfterCompose(comp);
 	}
 	
+	
+	public void redirect()
+	{
+		Executions.sendRedirect("searchmed.zul");
+	}
 	public Staff doViewProfile(int user_id){
 	    Staff s= new Staff();		
 	   // this.patient_id=user_id;	

@@ -1,6 +1,11 @@
 <?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
+
 <zk>	
-	<window border="normal" width="350px" title="Login" apply="clinlink.auth.LoginController" >
+	<style src="main.css" />
+	<div sclass="home">
+	<div sclass="win1" height="100%">	
+	<div sclass="rbroundbox">
+			<div sclass="rbtop"><div></div></div>	
 		<zscript>
 		<![CDATA[//@IMPORT
 		import clinlink.auth.*;
@@ -10,15 +15,15 @@
 		
 		int msg=0;
 		int status;
-		int page = 0;
+		int page11 = 0;
 		
 		User u = new User();
 		LoginController lc = new LoginController();
 	
 		public void requestLogin(){
 			int usetype = usertype.getSelectedIndex() + 1;
-			status = lc.doLogin(usertb.getValue(),pwdtb.getValue(),usetype);	
-			page = lc.page;
+			status = lc.doLogin(usertb.getValue(),pwdtb.getValue(),usetype);
+			page11 = lc.page;
 			displayMsg(status);			
 			
 		}
@@ -32,13 +37,14 @@
 		public void displayMsg(int msg){
 			User u = new User();
 			
+			try{
 			if(msg==0){ 
 				Messagebox.show("You provided invalid login information.","Error",Messagebox.OK,Messagebox.ERROR);
 			}
 			else if(msg==1){
 				session.setAttribute("userid",lc.userid);
 				session.setAttribute("usertype",lc.usertype);
-				redirect(page);
+				redirect(page11);
 			}
 			else if(msg==2){ 
 				Messagebox.show("Account is inactive. Please contact the admin.","Error",Messagebox.OK,Messagebox.ERROR);
@@ -47,19 +53,24 @@
 			else if(msg ==3){
 				Messagebox.show("Please complete the necessary information!","Error",Messagebox.OK,Messagebox.ERROR);
 			}
+			}
+			catch(Exception e){
+				
+				
+			}
 		}
 		
-		public void redirect(int page){
-			if(page==1){
+		public void redirect(int page11){
+			if(page11==1){
 				Executions.sendRedirect("admin.zul");
 			}
-			else if(page==2){
+			else if(page11==2){
 				Executions.sendRedirect("doctor.zul");
 			}
-			else if(page==3){
+			else if(page11==3){
 				Executions.sendRedirect("staff.zul");
 			}
-			else if(page==4){
+			else if(page11==4){
 				Executions.sendRedirect("patient.zul");
 			}
 		}
@@ -67,15 +78,14 @@
 		]]><![CDATA[
 		
 		]]></zscript>
-		
-		<div id="loginDiv">
+		<div id="loginDiv" sclass="loginDiv">
 			<grid>
 				<rows>
-					<row>
+					<row sclass="input">
 						Name :
 						<textbox id="usertb" width="200px" value="" />
 					</row>
-					<row>
+					<row >
 						Password :
 						<textbox id="pwdtb" width="200px" type="password" />
 					</row>
@@ -83,28 +93,27 @@
 						User Type:
 						<bandbox id="bd" width="184px" readonly="true">
 							<bandpopup >
-								<listbox id="usertype" width="200px" onSelect="bd.value=self.selectedItem.label; bd.closeDropdown();">
-	
+								<listbox id="usertype" width="200px" onSelect="bd.setValue(self.getSelectedItem().getLabel()); bd.closeDropdown();">
 									<listitem label="Administrator" value="1"/>
 									<listitem label="Doctor" value="2"/>
 									<listitem label="Staff" value="3" />
 									<listitem label="Patient" value="4" />
-									
 								</listbox>
-
 							</bandpopup>
 						</bandbox>
-
 					</row>
 				</rows>
 			</grid>			
 			<hbox pack="center" width="100%">
-				<button label="Login" id="Login" onClick="requestLogin()"/>
+				<button label="Login" id="Login" onClick="requestLogin()" />
 				<button label="Clear" onClick="clear()" />
 			</hbox>
-			
 		</div>
-		
-	</window>
-	
+	<div sclass="rbbot">
+				<div>
+				</div>
+			</div>
+			</div>
+	</div>
+	</div>	
 </zk>

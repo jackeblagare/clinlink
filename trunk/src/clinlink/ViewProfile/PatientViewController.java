@@ -2,12 +2,16 @@
 package clinlink.ViewProfile;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.lang.Strings;
 
 import clinlink.ViewProfile.Patient;
 //import Clinlink.ViewProfile.Staff;
 //import Clinlink.ViewProfile.Doctor;
+
+
+
 public class PatientViewController extends GenericForwardComposer{
 	/**
 	 * 
@@ -20,6 +24,11 @@ public class PatientViewController extends GenericForwardComposer{
 	public int page = 0;
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
+	}
+
+	public void redirect()
+	{
+		Executions.sendRedirect("medrecview.zul");
 	}
 	
 	public Patient doViewProfile(int user_id){

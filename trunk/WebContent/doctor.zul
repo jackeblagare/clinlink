@@ -1,6 +1,6 @@
 <?page title="new page title" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window id ="ppro" title="Profile" border="normal"><zscript>
+<window id ="ppro" title="Profile" border="normal" onCreate=" requestViewProfile()"><zscript>
 <![CDATA[//@IMPORT
         import clinlink.ViewProfile.*;
  		import org.zkoss.lang.Strings;
@@ -25,9 +25,15 @@
      	}
   		public void requestViewProfile(){
   			int usetype;
+  			int kat;
   			int user_id=Integer.parseInt(DocId.getValue());
+  			if (session.getAttribute("userid") == null)
+  	    		Executions.sendRedirect ("index.zul");
+  	    	else{	
+  	    		 kat = Integer.parseInt(session.getAttribute("userid").toString());
+  	    	}
 			this.doctor_id=user_id;
-			i=vpc.doViewProfile(user_id);	
+			i=vpc.doViewProfile(kat);	
 			//page = vpc.page;
 			//i=vpc.LoadProfile;	
 			DocId.setValue(Integer.toString(i.doctor_id));
@@ -39,12 +45,32 @@
 			ViewAppointment.setVisible(true);
 			ViewAppointment.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
 				public void onEvent(Event event) throws Exception {
+					Calendar cal = Calendar.getInstance();
+					if((cal.get(Calendar.MONTH)+1) < 10){
+						if(cal.get(Calendar.DATE) < 10){
+							session.setAttribute("dateNow",cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE));
+							session.setAttribute("today",cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE));
+						}else{
+							session.setAttribute("dateNow",cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE));
+							session.setAttribute("today",cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE));
+						}
+					}else{
+						if(cal.get(Calendar.DATE) < 10){
+							session.setAttribute("dateNow",cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE));
+							session.setAttribute("today",cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE));
+						}else{
+							session.setAttribute("dateNow",cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE));
+							session.setAttribute("today",cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE));
+						}
+					}
 					Executions.sendRedirect("appointmentView.zul");
 				}
 			});
 			//ViewRec.setVisible(true);
   		}
-	    
+  		public void doLogout(){
+	    	Executions.sendRedirect("index.zul");
+	    }
 		]]><![CDATA[
 		    		
 		]]></zscript>
@@ -53,19 +79,19 @@
 <grid>
 <rows>
 <row>Doctor ID :
-<textbox id="DocId" value="1" disabled="true"/>
+<label id="DocId" value="1"/>
 </row>
 <row>
 Doctor Name :
-<textbox id="DocName"  disabled="true"/> 
+<label id="DocName"/> 
 </row>
 <row>
 License Number : 
-<textbox id="Lic"  disabled="true"/>
+<label id="Lic" />
 </row>
 <row>
 Specialization : 
-<textbox id="Special" disabled="true" />
+<label id="Special" />
 </row>
 
 </rows>
@@ -82,7 +108,13 @@ Specialization :
 <button label="view medical records" onClick="viewmed()" />
 </div>
 <div>
-<button id="Logout" visible="true" label="Logout" onClick='session.invalidate();Executions.sendRedirect("index.zul")'/>
+<button id="edit" visible="true" label="Edit Profile" onClick='Executions.sendRedirect("editDoctor.zul")'/>
+</div>
+<div>
+<button id="create" visible="true" label="Create User" onClick='Executions.sendRedirect("createAccount.zul")'/>
+</div>
+<div>
+<button id="Logout" visible="true" label="Logout" onClick="doLogout()"/>
 </div>
 </window>
 </zk>

@@ -34,11 +34,11 @@ public class Doctor {
         	//int io=2;
         	con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
         	st= con.createStatement();
-        	rs=st.executeQuery("SELECT * from patient WHERE id="+user_id+"");
+        	rs=st.executeQuery("SELECT * from  doctor WHERE doctor_id="+user_id+"");
         	//Patient p2=new Patient();
         	if(rs.next()){
-        	d2.setDoctorID(rs.getInt(2));
-        	d2.setDname(rs.getString(1));
+        	d2.setDoctorID(rs.getInt(1));
+        	d2.setDname(rs.getString(2));
         	d2.setLicense(rs.getString(3));
         	d2.setSpecial(rs.getString(4));}
         	return d2;

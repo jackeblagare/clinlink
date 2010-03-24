@@ -15,7 +15,7 @@ public class DoctorManager{
 	
 	public void getAllDoctors(){
 		try{
-    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
     		st= con.createStatement();
     		rs=st.executeQuery("select doctor_id, name, specialization from doctor order by specialization");
     		while(rs.next() != false){
@@ -37,7 +37,7 @@ public class DoctorManager{
 	
 	public void getAllDoctors(int pid){
 		try{
-    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
     		st= con.createStatement();
     		rs=st.executeQuery("select distinct d.doctor_id, d.name, d.specialization from doctor d, appointment a where d.doctor_id=a.doctor_id and a.patient_id="+pid+" order by d.specialization");
     		while(rs.next() != false){
@@ -60,7 +60,7 @@ public class DoctorManager{
 	public String getName(int d_id){
 		String name="";
 		try{
-    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
     		st= con.createStatement();
     		rs=st.executeQuery("select name from doctor where doctor_id="+d_id);
     		while(rs.next() != false){

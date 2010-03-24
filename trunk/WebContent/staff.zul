@@ -1,6 +1,6 @@
 <?page title="new page title" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window id ="ppro" title="Profile" border="normal"><zscript>
+<window id ="ppro" title="Profile" border="normal" onCreate=" requestViewProfile()"><zscript>
 <![CDATA[//@IMPORT
         import clinlink.ViewProfile.*;
  		import org.zkoss.lang.Strings;
@@ -21,13 +21,23 @@
      	public Staff i= new Staff();
      	public void viewmed()
      	{
-     		Executions.sendRedirect("searchmed.zul");
+     		vpc.redirect();
+     	}
+     	public void editmed()
+     	{
+     		Executions.sendRedirect("searchMedEdit.zul");
      	}
   		public void requestViewProfile(){
   			int usetype;
-  			int user_id=Integer.parseInt(emp.getValue());
-			this.staff_id=user_id;
-			i=vpc.doViewProfile(user_id);	
+  			int u;
+  			if (session.getAttribute("userid") == null)
+  	    		Executions.sendRedirect ("index.zul");
+  	    	else{	
+  	    		 u = Integer.parseInt(session.getAttribute("userid").toString());
+  	    	}
+  		//	int user_id=Integer.parseInt(staffId.getValue());
+			//this.staff_id=user_id;
+			i=vpc.doViewProfile(u);	
 			//page = vpc.page;
 			//i=vpc.LoadProfile;	
 			name.setValue(Integer.toString(i.emp_id));
@@ -45,7 +55,9 @@
 			EditRec.setVisible(true);
 			//EditApp.setVisible(true);
   		}
-	    
+  		public void doLogout(){
+	    	Executions.sendRedirect("index.zul");
+	    }
 		]]><![CDATA[
 		    		
 		]]></zscript>
@@ -55,15 +67,15 @@
 <rows>
 <row>
 Staff Name :
-<textbox id="name"  disabled="true"/> 
+<label id="name"/> 
 </row>
 <row>
 Employee ID : 
-<textbox id="emp" value="1" disabled="true"/>
+<label id="emp" value="1"/>
 </row>
 <row>
 Position : 
-<textbox id="pos" disabled="true" />
+<label id="pos" />
 </row>
 
 </rows>
@@ -76,11 +88,17 @@ Position :
 <button id="ViewAppointment" visible="false" label="Manage Appointments" href="doctorView.zul"/>
 </div>
 <div>
-<button id="EditRec" visible="false" label="Edit Medical Record" href="Edit_rec.zul"/>
+<button id="EditRec" visible="false" label="Edit Medical Record" onClick="editmed()"/>
 <button label="view medical records" onClick="viewmed()" />
 </div>
 <div>
-<button id="Logout" visible="true" label="Logout" onClick='session.invalidate();Executions.sendRedirect("index.zul")'/>
+<button id="edit" visible="true" label="Edit Profile" onClick='Executions.sendRedirect("editStaff.zul")'/>
+</div>
+<div>
+<button id="create" visible="true" label="Create User" onClick='Executions.sendRedirect("createAccount.zul")'/>
+</div>
+<div>
+<button id="Logout" visible="true" label="Logout" onClick="doLogout()"/>
 </div>
 </window>
 </zk>

@@ -2,10 +2,12 @@
 <zk>
 <zscript>
 		<![CDATA[
+		import clinlink.appointment.AppointmentController;
 		import clinlink.appointment.DoctorController;
 		import clinlink.appointment.DoctorManager;
 		import org.zkoss.lang.Strings;
-
+		import java.util.Calendar;
+		
 		if(session.getAttribute("usertype") == null){
 			session.invalidate();
 			Executions.sendRedirect("/");
@@ -53,7 +55,26 @@
 				public void onEvent(Event event) throws Exception {
 					int temp = dm.doctors.indexOf(l2.getValue());
 					session.setAttribute("docID",dm.id.get(temp));
-					Executions.sendRedirect("appointmentView.zul");
+					AppointmentController ac = new AppointmentController();
+					Calendar cal = Calendar.getInstance();
+					if((cal.get(Calendar.MONTH)+1) < 10){
+						if(cal.get(Calendar.DATE) < 10){
+							session.setAttribute("dateNow",cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE));
+							session.setAttribute("today",cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE));
+						}else{
+							session.setAttribute("dateNow",cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE));
+							session.setAttribute("today",cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE));
+						}
+					}else{
+						if(cal.get(Calendar.DATE) < 10){
+							session.setAttribute("dateNow",cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE));
+							session.setAttribute("today",cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE));
+						}else{
+							session.setAttribute("dateNow",cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE));
+							session.setAttribute("today",cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE));
+						}
+					}
+					ac.redirect();
 				}
 				
 			});

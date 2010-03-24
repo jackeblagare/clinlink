@@ -35,15 +35,6 @@ public class SearchController extends GenericForwardComposer{
                 this.user=user; 
                 u.setUser(user);
                 pat_id = u.search();
-                System.out.println("before dapat 0 pat_id" + pat_id[0][0]);
-                System.out.println("dianne labas!" + pat_id[1][0]);
-            	int size=0;
-            	/*for (int i=0; Integer.parseInt(pat_id[i][0].toString())!=-1; i++)
-            	{
-            		System.out.println("pumasok sa loop");
-            		size++;
-            	}*/
-                System.out.println("hoi sa search controller size ay" + size);
                 return pat_id;
         }
 }

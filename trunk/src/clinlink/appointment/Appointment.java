@@ -16,12 +16,13 @@ public class Appointment{
 	public ArrayList<String> patients = new ArrayList<String>();
 	public ArrayList<String> appDate = new ArrayList<String>();
 	public ArrayList<Integer> appID = new ArrayList<Integer>();
+	public String docName;
 	
-    public void getAppointment(int doc){
+    public void getAppointment(int doc, String sun, String sat){
     	try{
-    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
     		st= con.createStatement();
-    		rs=st.executeQuery("select date, time, reason, id, name, appt_ID from appointment, patient where doctor_id="+doc+" and patient_id=id order by date, time");
+    		rs=st.executeQuery("select date, time, reason, id, name, appt_ID from appointment, patient where doctor_id="+doc+" and patient_id=id and date between '"+sun+"' and '"+sat+"' order by date, time");
     		while(rs.next() != false){
     			dates.add(rs.getDate(1).toString());
     			times.add(rs.getTime(2).toString());
@@ -45,19 +46,30 @@ public class Appointment{
     public int setAppointment(String patname, int p_id, int d_id, String date, String time, String reason){
     	int ok;
     	try{
-    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
     		st= con.createStatement();
-    		rs=st.executeQuery("select * from appointment where date='"+date+"' and time='"+time+"' and doctor_id="+d_id);
-    		if(rs.next() == false){
-    			rs=st.executeQuery("select * from appointment where date='"+date+"' and patient_id='"+p_id+"' and doctor_id="+d_id);
+    		if(p_id != -1){
+    			rs=st.executeQuery("select d.name from doctor d, appointment a where patient_id="+p_id+" and d.doctor_id=a.doctor_id and date='"+date+"' and time='"+time+"'");
     			if(rs.next() == false){
-    				st.executeUpdate("insert into appointment values('"+ date +"','"+ time +"',"+ d_id + ",'" + reason +"'," + p_id + ",NULL)");
-    				ok=0;
+    				rs=st.executeQuery("select * from appointment where date='"+date+"' and time='"+time+"' and doctor_id="+d_id);
+    				if(rs.next() == false){
+    					rs=st.executeQuery("select * from appointment where date='"+date+"' and patient_id='"+p_id+"' and doctor_id="+d_id);
+    					if(rs.next() == false){
+    						st.executeUpdate("insert into appointment values('"+ date +"','"+ time +"',"+ d_id + ",'" + reason +"'," + p_id + ",NULL)");
+    						ok=0;
+    					}else{
+    						ok=-1;
+    					}
+    				}else{
+    					ok=1;
+    				}
     			}else{
-    				ok=-1;
+    				docName = rs.getString(1);
+    				ok=-2;
     			}
     		}else{
-    			ok=1;
+    			st.executeUpdate("insert into appointment values('"+ date +"','"+ time +"',"+ d_id + ",'" + reason +"'," + p_id + ",NULL)");
+				ok=0;
     		}
     	}catch(SQLException e){
     		exc = e.toString();
@@ -76,7 +88,7 @@ public class Appointment{
     public int deleteAppointment(int aId){
     	int ok;
     	try{
-    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
     		st= con.createStatement();
     		st.executeUpdate("delete from appointment where appt_ID="+aId);
     		ok=0;
@@ -96,7 +108,7 @@ public class Appointment{
     
     public void getPatApp(int doc, int pat){
     	try{
-    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+    		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
     		st= con.createStatement();
     		rs=st.executeQuery("select date from appointment where doctor_id="+doc+" and patient_id="+pat+" order by date, time");
     		while(rs.next() != false){

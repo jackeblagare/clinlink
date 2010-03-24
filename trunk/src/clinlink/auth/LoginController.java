@@ -26,7 +26,6 @@ public class LoginController extends GenericForwardComposer{
 		this.user=user;	
 		this.pwd=pwd;
 		this.usertype = usertype;
-		
 		int status=0;
 		
 		if(isValid(user,pwd,usertype)==0){

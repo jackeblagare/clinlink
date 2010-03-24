@@ -1,7 +1,6 @@
 package clinlink.auth;
 
 import java.sql.*;
-//import java.util.ArrayList;
 
 
 public class User2{
@@ -44,7 +43,7 @@ public Object[][] approve()
 	Object[][] lahat;
 	try
 	{       
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
         st= con.createStatement();
         
         rs2=st.executeQuery("select * from user where isActive=0");
@@ -103,7 +102,7 @@ public void denyAccount()
 {
 	try
 	{       
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
         st= con.createStatement();
         
         st.executeUpdate("UPDATE user SET isActive=-1 WHERE username='"+username+"'");
@@ -139,7 +138,7 @@ public void approveAccount()
 {
 	try
 	{       
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
         st= con.createStatement();
         
         st.executeUpdate("UPDATE user SET isActive=1 WHERE username='"+username+"'");
@@ -176,7 +175,7 @@ public Object[][] searchMed()
 	Object[][] lahat;
 	try
 	{       
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
         st= con.createStatement();
         
         rs2=st.executeQuery("select * from med_record");
@@ -238,7 +237,7 @@ public Object[][] search()
 	Object[][] lahat;
 	try
 	{       
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
         st= con.createStatement();
         
         rs2=st.executeQuery("select * from patient");
@@ -294,12 +293,73 @@ public Object[][] search()
     }
 }
 
+public Object[][] searchDoctor()
+{
+	Object[][] lahat1;
+	try
+	{       
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
+        st= con.createStatement();
+        
+        rs2=st.executeQuery("select * from doctor");
+        int size=0;
+        while(rs2.next())
+        	size++;
+        lahat1 = new Object [size+1][2];
+        for (int i=0; i<size+1; i++)
+        	for (int j=0; j<2; j++)
+        			lahat1[i][j]=-1;
+        int pat_idcount=-1;
+        rs=st.executeQuery("select * from doctor");
+        while(rs.next())
+        {
+                if(rs.getString(2).contains(username))
+                {
+                	
+                	pat_idcount++;
+                	lahat1[pat_idcount][0]=rs.getString(2);
+                	lahat1[pat_idcount][1]=rs.getInt(1);
+                }
+                
+        }
+        return lahat1;
+   
+    } 
+	catch(SQLException e)
+	{
+		lahat1 = new Object[1][1];
+    	int[] exp3 = new int[100];
+    	for (int i=0; i<100; i++)
+    		exp3[i]=-1;
+        excption = e.toString();
+        	return lahat1;
+    }
+   
+    finally
+    {
+        if (st != null) {
+        	try 
+        	{
+        		st.close();
+            }
+            catch (SQLException ex) {}
+        }  
+        if (con != null) {
+             try 
+             {
+                 con.close();
+             }
+             catch (SQLException ex) {}
+        }
+    }
+}
+
 
 public int login(){
     
     try{
            
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","clinlink","clinlink");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinlink","root","");
             st= con.createStatement();
             rs=st.executeQuery("select * from user where username='"+username+"' and type='"+usertype+"'");
        
