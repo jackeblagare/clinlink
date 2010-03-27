@@ -1,15 +1,11 @@
 <?page title="new page title" contentType="text/html;charset=UTF-8"?>
 <zk>
 <style src="main.css" />
-<window id ="ppro" title="Profile" border="normal" onCreate=" requestViewProfile()" sclass="banner">
-<div sclass="spacer">
-</div>
-<zscript>
+<window id ="she" title="Profile" border="normal" onCreate="requestEditProfile()" sclass="banner"><zscript>
 <![CDATA[//@IMPORT
-        import clinlink.ViewProfile.*;
- 		import org.zkoss.lang.Strings;
- 		import java.sql.DriverManager;
- 		import java.sql.*;
+ 		import clinlink.EditProfile.*;
+		import org.zkoss.lang.Strings;
+		import org.zkoss.zul.Messagebox;
  		]]><![CDATA[//@DECLARATION
  		      //      public ResultSet rs;
  		      //  	public Connection con;
@@ -22,14 +18,14 @@
  		//int usetype;
  	    //user u = new user();
  	    
- 		PatientViewController vpc = new PatientViewController();
-     	public Patient i= new Patient();
+ 	    //User n = new User();
+		EditAccountUserController nauc = new EditAccountUserController();
+     	public User i= new User();
      	public void viewownmed()
      	{
-     		
-     		vpc.redirect();
+     		Executions.sendRedirect("medrecview.zul");
      	}
-  		public void requestViewProfile(){
+  		public void requestEditProfile(){
   			int usetype;
   			int kat;
   			if (session.getAttribute("userid") == null)
@@ -48,6 +44,7 @@
 			Sex.setValue(i.sex);
 			Contact.setValue(i.contact);
 			PatientProfile.setVisible(true);
+			view.setVisible(false);
 			ViewAppointment.setVisible(true);
 			ViewAppointment.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
 				public void onEvent(Event event) throws Exception {
@@ -60,15 +57,6 @@
 		]]><![CDATA[
 		    		
 		]]></zscript>
-		
-
-<menubar>
-	<menuitem id="ViewAppointment" label="Manage Appointment" href="doctorView.zul"/><menuseparator/>
-	<menuitem id="ViewRec" label="View Medical Record" onClick="viewownmed()"/><menuseparator/>
-	<menuitem id="edit" label="Edit Profile" onClick='Executions.sendRedirect("editPatient.zul")'/><menuseparator/>
-	<menuitem label="Logout" href="logoutView.zul"/>
-</menubar>
-
 <div id="PatientProfile" visible="false">
 <groupbox>
 <grid>
@@ -94,5 +82,7 @@ Contact :
 </grid>
 </groupbox>
 </div>
+<button id="view" label="View Profile" onClick="requestEditProfile()"/>
+<div>
 </window>
 </zk>

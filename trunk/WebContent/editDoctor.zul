@@ -1,0 +1,102 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk>
+<style src="main.css" />
+<window id ="edo" title="Profile" border="normal" onCreate="requestEditProfile()" sclass="banner">
+<div sclass="spacer"></div><zscript>
+<![CDATA[//@IMPORT
+        import clinlink.EditProfile.*;
+ 		import org.zkoss.lang.Strings;
+ 		import java.sql.DriverManager;
+ 		import java.sql.*;
+ 		import java.util.Calendar;
+ 		]]><![CDATA[//@DECLARATION
+ 		int msg=0;
+ 		int status;
+ 		int page = 0;
+ 		public int user_idd;
+ 		String excption;
+ 	    
+ 		DoctorEditController edc = new DoctorEditController();
+     	public Doctor i= new Doctor();
+
+  		public void requestEditProfile(){
+  			int usetype;
+  			int kat,id;
+  			if (session.getAttribute("userid") == null)
+  	    		Executions.sendRedirect ("index.zul");
+  	    	else{	
+  	    		 kat = Integer.parseInt(session.getAttribute("userid").toString());
+  	    	}
+  			
+  			int user_id=Integer.parseInt(doctorId.getValue());
+			this.doctor_id=user_id;
+			i=edc.doViewProfile(kat);	
+			doctorId.setValue(Integer.toString(i.doctor_id));
+			id=kat;
+			i=edc.doEditProfile(name.getValue(),specialization.getValue(),license.getValue(),id);	
+			DoctorProfile.setVisible(true);
+  		}
+	    
+  		public void requestViewAppointment(){
+  			Calendar cal = Calendar.getInstance();
+			if((cal.get(Calendar.MONTH)+1) < 10){
+				if(cal.get(Calendar.DATE) < 10){
+					session.setAttribute("dateNow",cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE));
+					session.setAttribute("today",cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE));
+				}else{
+					session.setAttribute("dateNow",cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE));
+					session.setAttribute("today",cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE));
+				}
+			}else{
+				if(cal.get(Calendar.DATE) < 10){
+					session.setAttribute("dateNow",cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE));
+					session.setAttribute("today",cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE));
+				}else{
+					session.setAttribute("dateNow",cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE));
+					session.setAttribute("today",cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE));
+				}
+			}
+			Executions.sendRedirect("appointmentView.zul");
+  		}
+		]]><![CDATA[
+		    		
+		]]></zscript>
+
+<menubar>
+	<menuitem label="View Profile" onClick='Executions.sendRedirect("doctor.zul")'/><menuseparator/>
+	<menuitem id="ViewAppointment" label="View Appointment" onClick="requsetViewAppointment()"/><menuseparator/>
+	<menuitem label="View Medical Record" onClick='Executions.sendRedirect("searchmed.zul");'/><menuseparator/>
+	<menuitem label="Create User" onClick='Executions.sendRedirect("createAccount.zul")'/><menuseparator/>
+	<menuitem label="Logout" onClick='Executions.sendRedirect("logoutView.zul")'/>
+</menubar>
+
+<div id="DoctorProfile" onCreate="requestEditProfile()">
+<groupbox>
+<grid>
+<rows>
+<row> Doctor ID :
+<label id="doctorId" value="1"/>
+</row>
+<row>
+Doctor Name :
+<textbox id="name" width="200px" value=""/> 
+</row>
+<row>
+Specialization : 
+<textbox id="specialization" width="200px" value=""/>
+</row>
+<row>
+License : 
+<textbox id="license" width="200px" value=""/>
+</row>
+
+</rows>
+
+</grid>
+</groupbox>
+</div>
+
+
+
+</window>
+</zk>

@@ -1,7 +1,9 @@
 <?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window id ="ppro" border="normal" title=" ">
-
+<style src="main.css" />
+<window id ="ppro" border="normal" title=" " sclass="banner">
+<div sclass="spacer">
+</div>
 <zscript>
 	<![CDATA[//@IMPORT
 	import clinlink.auth.*;

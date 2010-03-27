@@ -1,5 +1,6 @@
 <?page title="Doctor List" contentType="text/html;charset=UTF-8"?>
 <zk>
+<style src="main.css" />
 <zscript>
 		<![CDATA[
 		import clinlink.appointment.AppointmentController;
@@ -96,7 +97,8 @@
 
 <separator/>
 
-<div id="win" onCreate="requestViewDoctors()">
+<div id="win" onCreate="requestViewDoctors()" sclass="banner">
+<div sclass="spacer"></div>
 <menubar>
 	<menuitem label="Profile" onClick="viewProfile()"/>
 	<menuitem label="Logout" onClick='session.invalidate(); Executions.sendRedirect("/")'/>

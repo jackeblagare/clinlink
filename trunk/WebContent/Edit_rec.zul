@@ -1,6 +1,8 @@
 <?page title="edit_record" contentType="text/html;charset=UTF-8"?>
 <zk>
-	<window id ="ppro" title="Profile" border="normal"><zscript>
+<style src="main.css" />
+	<window id ="ppro" title="Profile" border="normal" slass="banner">
+	<div sclass="spacer"></div><zscript>
 <![CDATA[//@IMPORT
         import clinlink.ViewProfile.*;
 	import clinlink.EditMedRecord.*;

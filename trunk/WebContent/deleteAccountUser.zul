@@ -1,0 +1,203 @@
+<?page title="List of Users" contentType="text/html;charset=UTF-8"?>
+<zk>
+<style src="main.css" />
+<zscript>
+		<![CDATA[
+		import clinlink.deleteAccount.DeletePatientController;
+		import clinlink.deleteAccount.DeleteStaffController;
+		import clinlink.deleteAccount.DeleteDoctorController;
+		import clinlink.deleteAccount.DeleteManager;;
+		import org.zkoss.lang.Strings;
+		import java.util.Calendar;
+		
+		DeletePatientController dpc = new DeletePatientController();
+		DeleteStaffController dsc = new DeleteStaffController();
+		DeleteDoctorController ddc = new DeleteDoctorController();
+		DeleteManager dp = new DeleteManager();
+		DeleteManager dd = new DeleteManager();
+		DeleteManager ds = new DeleteManager();
+		
+		public void requestDelete(){
+			int usetype = usertype.getSelectedIndex() + 1;	
+			if(usetype==2)
+			dsc.doDelete(user.getValue(),usetype);
+			else if(usetype==1)
+			ddc.doDelete(user.getValue(),usetype);	
+			else if(usetype==3)
+			dpc.doDelete(user.getValue(),usetype);	
+		}		
+	
+		public void clear(){
+			user.setValue("");
+			bd.setValue("");
+		}		
+		
+		public void requestDeleteAccount(){
+			dsc.getStaffNames(ds);
+			displayStaffNames();
+			ddc.getDoctorNames(dd);
+			displayDoctorNames();
+			dpc.getPatientNames(dp);
+			displayPatientNames();
+			}
+		
+		public void displayStaffNames(){
+			int i=-1;
+			while(++i != ds.position.size()){
+				Row r1 = new Row();
+				Label l1 = new Label();
+				Label l2 = new Label();
+				Label l3 = new Label();
+				Label l4 = new Label();
+				l4.setValue(ds.emp_id.get(i).toString());
+				l1.setValue(ds.name.get(i));
+				l2.setValue(ds.position.get(i));
+				l4.setStyle("color: blue");
+				r1.appendChild(l4);
+				r1.appendChild(l2);
+				r1.appendChild(l1);
+				r.appendChild(r1);
+	}
+}
+		
+		
+		public void displayDoctorNames(){
+			int i=-1;
+			while(++i != dd.specialization.size()){
+				Row r11 = new Row();
+				Label l11 = new Label();
+				Label l12 = new Label();
+				Label l13 = new Label();
+				l11.setValue(dd.doctor_id.get(i).toString());
+				l12.setValue(dd.name.get(i));
+				l13.setValue(dd.specialization.get(i));
+				l11.setStyle("color: blue");
+				r11.appendChild(l11);
+				r11.appendChild(l12);
+				r11.appendChild(l13);
+				s.appendChild(r11);
+			}
+		}
+		
+		public void displayPatientNames(){
+			int i=-1;
+			while(++i != dp.sex.size()){
+				Row r21 = new Row();
+				Label l21 = new Label();
+				Label l22 = new Label();
+				Label l23 = new Label();
+				l21.setValue(dp.id.get(i).toString());
+				l22.setValue(dp.name.get(i));
+				l23.setValue(dp.sex.get(i));
+				l21.setStyle("color: blue");
+				r21.appendChild(l21);
+				r21.appendChild(l22);
+				r21.appendChild(l23);
+				t.appendChild(r21);
+			}
+		}
+		
+	]]>
+</zscript>
+<separator/>
+
+<div id="delete" onCreate="requestDeleteAccount()" sclass="banner">
+<div sclass="spacer"></div>
+<menubar>
+	<menuitem label="View Profile" onClick='Executions.sendRedirect("admin.zul")'/>
+	<menuseparator />
+	<menuitem label="View medical records" onClick="goback2()" />
+	<menuseparator />
+	<menuitem id="approve" label="approve request" onClick='Executions.sendRedirect("approve.zul")'/>
+	<menuseparator />
+	<menuitem id="create" label="create user" onClick='Executions.sendRedirect("createAccount.zul")'/>
+	<menuseparator />
+	<menuitem id="Logout" label="Logout" onClick='Executions.sendRedirect("logoutView.zul")'/>
+</menubar>
+<space/>
+
+	<grid id="g1" width="50%">
+		<columns>
+		<column label="Record of all Users"/>
+		</columns>
+		<rows id="rr">
+		</rows>
+	</grid>
+	
+	<grid id="staff" width="50%">
+	<columns>
+	<column label="Staff Record"/>
+	</columns>
+	</grid>
+	
+	<grid id="g" width="50%">
+		<columns>
+			<column label="Staff ID" width="33.33%" sort="auto"/>
+			<column label="Staff" width="33.33%" sort="auto"/>
+			<column label="Position" width="33.33%" sort="auto"/>
+		</columns>
+		<rows id="r">
+		</rows>
+	</grid>
+	<grid width="50%">
+	<columns>
+	<column label=""/>
+	</columns>
+	</grid>
+	
+	<grid id="doc" width="50%">
+	<columns>
+	<column label="Doctor Record"/>
+	</columns>
+	</grid>
+	<grid id="f" width="50%">
+		<columns>
+			<column label="Doctor ID" width="33.33%" sort="auto"/>
+			<column label="Doctor" width="33.33%" sort="auto" />
+			<column label="Specialization" width="33.33%" sort="auto"/>
+		</columns>
+		<rows id="s">
+		</rows>
+	</grid>
+	<grid id="pat" width="50%">
+	<columns>
+	<column label="Patient Record"/>
+	</columns>
+	</grid>
+	<grid id ="x" width="50%">
+		<columns>
+			<column label="Patient ID" width="33.33%" sort="auto"/>
+			<column label="Patient" width="33.33%" sort="auto"/>
+			<column label="Sex" width="33.33%" sort="auto"/>
+		</columns>
+		<rows id="t">
+		</rows>
+	</grid>
+	
+				<grid id ="buts" width="50%">
+				<rows>
+					<row>
+						User_id :
+						<textbox id="user" width="200px" value="" />
+					</row>
+					<row>
+						User Type:
+						<bandbox id="bd" width="184px" readonly="true">
+							<bandpopup >
+								<listbox id="usertype" width="200px" onSelect="bd.value=self.selectedItem.label; bd.closeDropdown();">
+									<listitem label="Doctor" value="2"/>
+									<listitem label="Staff" value="3" />
+									<listitem label="Patient" value="4" />								
+								</listbox>
+							</bandpopup>
+						</bandbox>
+					</row>
+				</rows>
+			</grid>	
+				<hbox pack="center" width="50%">
+				<button label="Delete" id="Delete" onClick="requestDelete()"/>		
+				<button label="Clear" onClick="clear()" />
+			</hbox>
+
+</div>
+</zk>

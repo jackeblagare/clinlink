@@ -1,0 +1,90 @@
+<?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
+<zk>
+<style src="main.css" />	
+	<window border="normal" title="Create" apply="clinlink.cauc.CreateAccountUserController" sclass="banner">
+	<div sclass="spacer"></div>
+		<zscript>
+		<![CDATA[//@IMPORT
+		import clinlink.cauc.*;
+		import org.zkoss.lang.Strings;
+		import org.zkoss.zul.Messagebox;
+		]]><![CDATA[//@DECLARATION
+			
+		User u = new User();
+		CreateAccountUserController auc = new CreateAccountUserController();
+		
+		public void requestCreate(){
+			int usetype = usertype.getSelectedIndex() + 1;
+			if (pwdtb.getValue().equals(pwdtb2.getValue()))			
+			auc.doCreate(usertb.getValue(),pwdtb.getValue(),usetype);
+			else{
+				alert("The password did not match.");
+				pwdtb.setValue("");
+				pwdtb2.setValue("");
+			}
+			}
+    	
+		public void clear(){
+			usertb.setValue("");
+			pwdtb.setValue("");
+			pwdtb2.setValue("");
+			bd.setValue("");
+		}	
+	
+		
+		]]><![CDATA[
+		
+		]]></zscript>
+		
+		
+<menubar>
+<!--	<menuitem label="View Profile" onClick='Executions.sendRedirect("admin.zul")'/>-->
+<!--	<menuseparator />-->
+<!--	<menuitem label="View medical records" onClick="goback2()" />-->
+<!--	<menuseparator />-->
+<!--	<menuitem id="approve" label="approve request" onClick='Executions.sendRedirect("approve.zul")'/>-->
+<!--	<menuseparator />-->
+<!--	<menuitem id="delete" label="Delete User" onClick='Executions.sendRedirect("deleteAccountUser.zul")'/>-->
+<!--	<menuseparator />-->
+	<menuitem id="Logout" label="Logout" onClick='Executions.sendRedirect("logoutView.zul")'/>
+</menubar>
+<space/>
+		
+		<div id="createDiv">
+			<grid>
+				<rows>
+					<row>
+						Name :
+						<textbox id="usertb" width="200px" value="" />
+					</row>
+					<row>
+						Password :
+						<textbox id="pwdtb" width="200px" type="password" />
+					</row>
+					<row>
+						Confirm Password :
+						<textbox id="pwdtb2" width="200px" type="password" />
+					</row>
+					<row>
+						User Type:
+						<bandbox id="bd" width="184px" readonly="true">
+							<bandpopup >
+								<listbox id="usertype" width="200px" onSelect="bd.value=self.selectedItem.label; bd.closeDropdown();">
+	
+									<listitem label="Administrator" value="1"/>
+									<listitem label="Doctor" value="2"/>
+									<listitem label="Staff" value="3" />
+									<listitem label="Patient" value="4" />								
+								</listbox>
+							</bandpopup>
+						</bandbox>
+					</row>
+				</rows>
+			</grid>			
+			<hbox pack="center" width="100%">
+				<button label="Create" id="Create" onClick="requestCreate()"/>
+				<button label="Clear" onClick="clear()" />
+			</hbox>
+		</div>
+	</window>	
+</zk>

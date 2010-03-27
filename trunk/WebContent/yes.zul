@@ -2,7 +2,6 @@
 <zk>
 <style src="main.css" />
 <window title="new page title" border="normal" id="window2" width="2500px" sclass="banner">
-<div sclass="spacer"></div>
 <zscript>
 	<![CDATA[//@IMPORT
 	import clinlink.auth.*;
@@ -15,10 +14,15 @@
     User u = new User();
     SearchController sc2 = new SearchController();
     Object[][] pat_id;
-    
-    public void displayrecord()
+    public void searchname()
     {
-    	Grid grid2 = new Grid();
+    	if (session.getAttribute("userid") == null)
+    		Executions.sendRedirect ("index.zul");
+    	else{	int kat = Integer.parseInt(session.getAttribute("userid").toString());
+    	
+	    pat_id = sc2.doSearchMed(kat);	
+	  
+	  	Grid grid2 = new Grid();
 		Columns col2 = new Columns();
 		Rows row2 = new Rows();
 		
@@ -68,42 +72,29 @@
 			   
 		   	}
 		   	Button but = new Button("Go");
+		  
 		   	row22.appendChild(but);
 		   	yy++;
 		   	row2.appendChild(row22);
 		  }
 		  
+		
 		grid2.appendChild(row2);
 		window2.appendChild(grid2);
-    }
-    
-    
-    public void searchname()
-    {
-    	if (session.getAttribute("userid") == null)
-    		Executions.sendRedirect ("index.zul");
-    	else
-    	{	
-    		int kat = Integer.parseInt(session.getAttribute("userid").toString());
-	    	pat_id = sc2.doSearchMed(kat);	
-	  		displayrecord();
-	  	
     	}
 	
     }
     
+	public void clear()
+	{
+		usertb.setValue("");
+	}
 	
 
 	
 	]]><![CDATA[
 
 ]]></zscript>
-<menubar>
-	<menuitem label="View Profile" href="patient.zul"/><menuseparator/>
-	<menuitem id="ViewAppointment" label="Manage Appointment" href="doctorView.zul"/><menuseparator/>
-	<menuitem id="edit" label="Edit Profile" onClick='Executions.sendRedirect("editPatient.zul")'/><menuseparator/>
-	<menuitem label="Logout" href="logoutView.zul"/>
-</menubar>
 <div onCreate="searchname()">
 </div>
 <button label="go back" href="patient.zul" />

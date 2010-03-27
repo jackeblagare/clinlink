@@ -1,5 +1,6 @@
 <?page title="new page title" contentType="text/html;charset=UTF-8" onload="copy2()" ?>
 <zk>
+<style src="main.css" />
 <zscript>
 <![CDATA[//@IMPORT
 import clinlink.auth.*;
@@ -46,6 +47,7 @@ public void hoi2()
 }
 ]]>
 </zscript>
-<window id="window2" onCreate="hoi2()">
+<window id="window2" onCreate="hoi2()" sclass="banner">
+<div sclass="spacer"></div>
 </window>
 </zk>

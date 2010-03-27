@@ -1,6 +1,6 @@
 <?page title="View Appointment" contentType="text/html;charset=UTF-8"?>
 <zk>
-
+<style src="main.css" />
 <zscript>
 		<![CDATA[
 		import clinlink.appointment.*;
@@ -470,7 +470,8 @@
 </zscript>
 
 <separator />
-<div>
+<div sclass="banner">
+<div sclass="spacer"></div>
 <menubar id="mb">
 	<menuitem label="Profile" onClick="viewProfile()"/>
 	<menuitem label="Logout" onClick='session.invalidate(); Executions.sendRedirect("/")'/>

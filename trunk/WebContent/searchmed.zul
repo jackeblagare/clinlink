@@ -1,13 +1,15 @@
 <?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window id="window1" border="normal" title=" " apply="clinlink.auth.LoginController" >
-
+<style src="main.css" />
+<window id="window1" border="normal" title=" " apply="clinlink.auth.LoginController" sclass="banner">
+<div sclass="spacer"></div>
 <zscript>
 	<![CDATA[//@IMPORT
 	import clinlink.auth.*;
 	import org.zkoss.lang.Strings;
 	import java.util.ArrayList;
-
+	import java.util.Calendar;
+	
 	]]><![CDATA[//@DECLARATION
 	
 	String kat3=" ";
@@ -20,6 +22,8 @@
     	
     	if (kat == 1)
     		Executions.sendRedirect("admin.zul");
+    	else if (kat ==2)
+    		Executions.sendRedirect("doctor.zul");
     	else if (kat ==3)
     		Executions.sendRedirect("staff.zul");
     }
@@ -171,14 +175,14 @@
 
 
 <menubar>
-	<menuitem label="View Profile" onClick='Executions.sendRedirect("admin.zul")'/>
+	<menuitem label="View Profile" onClick="goback()"/>
 	<menuseparator />
-	<menuitem label="approve requests" onClick='Executions.sendRedirect("approve.zul")' />
-	<menuseparator />
-	<menuitem id="create" label="Create User" onClick='Executions.sendRedirect("createAccount.zul")'/>
-	<menuseparator />
-	<menuitem id="delete" label="Delete User" onClick='Executions.sendRedirect("deleteAccountUser.zul")'/>
-	<menuseparator />
+<!--	<menuitem label="approve requests" onClick='Executions.sendRedirect("approve.zul")' />-->
+<!--	<menuseparator />-->
+<!--	<menuitem id="create" label="Create User" onClick='Executions.sendRedirect("createAccount.zul")'/>-->
+<!--	<menuseparator />-->
+<!--	<menuitem id="delete" label="Delete User" onClick='Executions.sendRedirect("deleteAccountUser.zul")'/>-->
+<!--	<menuseparator />-->
 	<menuitem id="Logout" label="Logout" onClick='Executions.sendRedirect("logoutView.zul")'/>
 </menubar>
 <space/>

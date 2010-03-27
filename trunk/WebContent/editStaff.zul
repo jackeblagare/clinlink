@@ -1,0 +1,78 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk>
+<style src="main.css" />
+<window id ="sdo" title="Profile" border="normal" onCreate="requestEditProfile()" sclass="banner">
+<div sclass="spacer"></div><zscript>
+<![CDATA[//@IMPORT
+        import clinlink.EditProfile.*;
+ 		import org.zkoss.lang.Strings;
+ 		import java.sql.DriverManager;
+ 		import java.sql.*;
+ 		]]><![CDATA[//@DECLARATION
+ 		int msg=0;
+ 		int status;
+ 		int page = 0;
+ 		public int user_idd;
+ 		String excption;
+ 	    
+ 		StaffEditController sec = new StaffEditController();
+     	public Staff i= new Staff();
+
+  		public void requestEditProfile(){
+  			int usetype;
+  			int kat,id;
+  			if (session.getAttribute("userid") == null)
+  	    		Executions.sendRedirect ("index.zul");
+  	    	else{	
+  	    		 kat = Integer.parseInt(session.getAttribute("userid").toString());
+  	    	}
+  			
+  			int user_id=Integer.parseInt(empId.getValue());
+			this.emp_id=user_id;
+			i=sec.doViewProfile(kat);	
+			empId.setValue(Integer.toString(i.emp_id));
+			id=kat;
+			i=sec.doEditProfile(name.getValue(),position.getValue(),id);	
+			StaffProfile.setVisible(true);
+  		}
+	    
+		]]><![CDATA[
+		    		
+		]]></zscript>
+		
+<menubar>
+	<menuitem label="View Profile" href="staff.zul"/><menuseparator/>
+	<menuitem id="ViewAppointment" label="Manage Appointment" href="doctorView.zul"/><menuseparator/>
+	<menuitem id="EditRec" label="Edit Medical Record" onClick="editmed()"/><menuseparator/>
+	<menuitem label="View Medical Record" onClick="viewmed()"/><menuseparator/>
+	<menuitem id="create" label="Create User" onClick='Executions.sendRedirect("createAccount.zul")'/><menuseparator/>
+	<menuitem label="Logout" onClick="doLogout()"/>
+</menubar>
+		
+<div id="StaffProfile" visible="false">
+<groupbox>
+<grid>
+<rows>
+<row> Employee ID :
+<label id="empId" value="1"/>
+</row>
+<row>
+Employee Name :
+<textbox id="name" width="200px" value=""/> 
+</row>
+<row>
+Position : 
+<textbox id="position" width="200px" value=""/>
+</row>
+</rows>
+
+</grid>
+</groupbox>
+</div>
+<div>
+<button id="edit" label="Edit Profile" onClick="requestEditProfile()"/>
+</div>
+
+
+</window>
+</zk>

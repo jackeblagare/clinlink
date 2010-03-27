@@ -1,11 +1,16 @@
-<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<?page title="Doctor" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window id ="ppro" title="Profile" border="normal" onCreate=" requestViewProfile()"><zscript>
+<style src="main.css" />
+<window id ="ppro" title="Profile" border="normal" onCreate=" requestViewProfile()" sclass="banner">
+<div sclass="spacer">
+</div>
+<zscript>
 <![CDATA[//@IMPORT
         import clinlink.ViewProfile.*;
  		import org.zkoss.lang.Strings;
  		import java.sql.DriverManager;
  		import java.sql.*;
+ 		import java.util.Calendar;
  		]]><![CDATA[//@DECLARATION
  		      //      public ResultSet rs;
  		      //  	public Connection con;
@@ -41,8 +46,7 @@
 			Lic.setValue(i.license);
 			Special.setValue(i.specialization);
 			DoctorProfile.setVisible(true);
-			view.setVisible(false);
-			ViewAppointment.setVisible(true);
+			
 			ViewAppointment.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
 				public void onEvent(Event event) throws Exception {
 					Calendar cal = Calendar.getInstance();
@@ -68,13 +72,20 @@
 			});
 			//ViewRec.setVisible(true);
   		}
-  		public void doLogout(){
-	    	Executions.sendRedirect("index.zul");
-	    }
+  		
 		]]><![CDATA[
 		    		
 		]]></zscript>
-<div id="DoctorProfile" visible="false">
+
+<menubar>
+	<menuitem id="ViewAppointment" label="View Appointment" onClick=""/><menuseparator/>
+	<menuitem label="View Medical Record" onClick="viewmed()"/><menuseparator/>
+	<menuitem label="Edit Profile" onClick='Executions.sendRedirect("editDoctor.zul")'/><menuseparator/>
+	<menuitem label="Create User" onClick='Executions.sendRedirect("createAcount.zul")'/><menuseparator/>
+	<menuitem label="Logout" onClick='Executions.sendRedirect("logoutView.zul")'/>
+</menubar>
+
+<div id="DoctorProfile" onCreate="requestViewProfile()">
 <groupbox>
 <grid>
 <rows>
@@ -98,23 +109,6 @@ Specialization :
 
 </grid>
 </groupbox>
-</div>
-<button id="view" label="View Profile" onClick="requestViewProfile()"/>
-<div>
-<button id="ViewAppointment" visible="false" label="View Appointments" onClick=""/>
-</div>
-<div>
-<button id="ViewRec" visible="false" label="View Medical Record" onClick=""/>
-<button label="view medical records" onClick="viewmed()" />
-</div>
-<div>
-<button id="edit" visible="true" label="Edit Profile" onClick='Executions.sendRedirect("editDoctor.zul")'/>
-</div>
-<div>
-<button id="create" visible="true" label="Create User" onClick='Executions.sendRedirect("createAccount.zul")'/>
-</div>
-<div>
-<button id="Logout" visible="true" label="Logout" onClick="doLogout()"/>
 </div>
 </window>
 </zk>
