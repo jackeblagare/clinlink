@@ -1,0 +1,31 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8" onload="copy2()" ?>
+<zk>
+<style src="main.css" />
+<zscript>
+<![CDATA[//@IMPORT
+
+		import clinlink.cauc.*;
+		import org.zkoss.lang.Strings;
+		import org.zkoss.zul.Messagebox;
+		]]><![CDATA[//@DECLARATION
+		            
+		    		User u = new User();
+		    		CreateAccountUserController auc = new CreateAccountUserController();
+
+public void clear{
+
+Grid grid2 = new Grid();
+	Columns col2 = new Columns();
+	Rows row2 = new Rows();
+	
+	Column col22 = new Column();
+	col22.setLabel("Names");
+	
+	col2.appendChild(col22);
+	grid2.appendChild(col2);
+}	
+]]>
+</zscript>
+<window id="window2" onCreate="clear()" sclass="banner">
+</window>
+</zk>

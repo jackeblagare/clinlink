@@ -1,0 +1,125 @@
+<?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
+<zk>
+<style src="main.css" />
+<window id="window1" border="normal" width="450px" apply="clinlink.auth.ApproveController" sclass="banner">
+<div sclass="spacer"></div>
+<zscript>
+	<![CDATA[//@IMPORT
+	import clinlink.deleteAccount.*;
+	import org.zkoss.lang.Strings;
+	]]><![CDATA[//@DECLARATION
+
+    User2 u = new User2();
+    DeleteStaffController sc2 = new DeleteStaffController();
+    Object[][] pat_id;
+    int count=0;
+    
+    public void approve()
+    {
+    	count++;
+	    pat_id = sc2.doApprove();
+	    if (count>1)
+	    {
+	    	window1.removeChild(window1.getFirstChild());
+	    	if (window1.getLastChild()!=null)
+	    		window1.removeChild(window1.getLastChild());
+	    }
+
+    	window1.removeChild(window2.getFirstChild());
+    	window1.setTitle("Delete");	
+	  
+	  	Grid grid2 = new Grid();
+		Columns col2 = new Columns();
+		Rows row2 = new Rows();
+		
+		Column col22 = new Column("Staff Name");
+		Column col23 = new Column("Position");
+		Column col124 = new Column (""); 
+		Column col125 = new Column("");
+		
+		col2.appendChild(col22);
+		col2.appendChild(col23);
+		col2.appendChild(col124);
+		col2.appendChild(col125);
+		grid2.appendChild(col2);
+		int yy=0;
+		   
+		   
+		   
+		while(pat_id[yy][0].toString().equals("-1")== false)
+		{		
+				int ii=0;
+				Row row22 = new Row();
+			   	for (ii=0; ii<2; ii++)
+			   	{
+			   		Label lab = new Label();
+			   		if (ii == 1)
+			   		{
+			   				if (Integer.parseInt(pat_id[yy][ii].toString()) == 1)
+			   					lab.setValue("admin");
+			   				else if (Integer.parseInt(pat_id[yy][ii].toString()) == 2)
+			   					lab.setValue("doctor");
+			   				else if (Integer.parseInt(pat_id[yy][ii].toString()) == 3)
+			   					lab.setValue("staff");
+			   				else if (Integer.parseInt(pat_id[yy][ii].toString()) == 4)
+			   					lab.setValue("patient");
+			   		}
+			   		else{
+			   			lab.setValue(pat_id[yy][ii].toString());}
+			   		
+					row22.appendChild(lab);
+				   
+			   	}
+		   		Button but = new Button("Approve");
+			   	Button but2 = new Button ("Deny");
+			   	but.setAttribute("name", pat_id[yy][0].toString());
+				but2.setAttribute("name", pat_id[yy][0].toString());
+			   	but.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
+			   		public void onEvent(Event event) throws Exception {
+			   			ApproveController ap3 = new ApproveController();
+			   			ap3.doApproveAccount(but.getAttribute("name").toString());
+			   			approve();   			
+			   	}});
+				but2.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
+			   		public void onEvent(Event event) throws Exception {
+			   			ApproveController ap = new ApproveController();
+			   			ap.doDenyAccount(but2.getAttribute("name").toString());
+			   			approve();
+			   	}});
+			  
+			   	row22.appendChild(but);
+			   	Label lab2 = new Label(); 
+			   	row22.appendChild(but2);
+			   	yy++;
+			   	row2.appendChild(row22);
+		}
+		  
+		Row row33 = new Row();
+		Button but2 = new Button("Go Back");
+			but2.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
+		  		public void onEvent(Event event) throws Exception {
+		  			Executions.sendRedirect("admin.zul");
+		  	}});
+		row33.appendChild(but2);
+		row2.appendChild(row33);
+		grid2.appendChild(row2);
+		window1.appendChild(grid2);
+		
+	
+    }
+
+	
+
+	
+]]><![CDATA[
+
+]]></zscript>
+<div id="loginDiv" onCreate="approve()">
+</div>
+</window>
+<space /><space /><space />
+<window id="window2">
+<div id="div2"></div>
+</window>
+</zk>
+

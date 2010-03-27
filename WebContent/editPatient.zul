@@ -1,0 +1,77 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk>
+<style src="main.css" />
+<window id ="ppro" title="Profile" border="normal" onCreate="requestEditProfile()" sclass="banner">
+<div sclass="spacer"></div><zscript>
+<![CDATA[//@IMPORT
+        import clinlink.EditProfile.*;
+ 		import org.zkoss.lang.Strings;
+ 		import java.sql.DriverManager;
+ 		import java.sql.*;
+ 		]]><![CDATA[//@DECLARATION
+ 		int msg=0;
+ 		int status;
+ 		int page = 0;
+ 		public int user_idd;
+ 		String excption;
+ 	    
+ 		PatientEditController vpc = new PatientEditController();
+     	public Patient i= new Patient();
+
+  		public void requestEditProfile(){
+  			int usetype;
+  			int kat,id;
+  			if (session.getAttribute("userid") == null)
+  	    		Executions.sendRedirect ("index.zul");
+  	    	else{	
+  	    		 kat = Integer.parseInt(session.getAttribute("userid").toString());
+  	    	}
+  			
+  			int user_id=Integer.parseInt(patientId.getValue());
+			this.patient_id=user_id;
+			i=vpc.doViewProfile(kat);
+			System.out.println(kat);	
+			patientId.setValue(Integer.toString(i.id));
+			id=kat;
+			i=vpc.doEditProfile(name.getValue(),sex.getValue(),contact.getValue(),id);	
+			PatientProfile.setVisible(true);
+  		}
+	    
+		]]><![CDATA[
+		    		
+		]]></zscript>
+<menubar>
+	<menuitem label="View Profile" href="patient.zul"/><menuseparator/>
+	<menuitem id="ViewAppointment" label="Manage Appointment" href="doctorView.zul"/><menuseparator/>
+	<menuitem id="ViewRec" label="View Medical Record" onClick="viewownmed()"/><menuseparator/>
+	<menuitem label="Logout" href="logoutView.zul"/>
+</menubar>
+<div id="PatientProfile" onCreate="requestEditProfile()">
+<groupbox>
+<grid>
+<rows>
+<row> Patient ID :
+<label id="patientId" value="1"/>
+</row>
+<row>
+Patient Name :
+<textbox id="name" width="200px" value=""/> 
+</row>
+<row>
+Sex : 
+<textbox id="sex" width="200px" value=""/>
+</row>
+<row>
+Contact : 
+<textbox id="contact" width="200px" value=""/>
+</row>
+
+</rows>
+
+</grid>
+</groupbox>
+</div>
+
+
+</window>
+</zk>

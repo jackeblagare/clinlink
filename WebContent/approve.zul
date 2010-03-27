@@ -1,7 +1,8 @@
 <?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window id="window1" border="normal" apply="clinlink.auth.ApproveController" >
-
+<style src="main.css" />
+<window id="window1" border="normal" apply="clinlink.auth.ApproveController" sclass="banner">
+<div sclass="spacer"></div>
 <zscript>
 	<![CDATA[//@IMPORT
 	import clinlink.auth.*;

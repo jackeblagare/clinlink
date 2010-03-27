@@ -1,0 +1,83 @@
+<?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
+<zk>
+<style src="main.css" />	
+	<window border="normal" width="350px" title="Create Doctor" apply="clinlink.cauc.CreateAccountUserController" sclass="banner">
+	<div sclass="spacer"></div>
+		<zscript>
+		<![CDATA[//@IMPORT
+		import clinlink.cauc.*;
+		import org.zkoss.lang.Strings;
+		import org.zkoss.zul.Messagebox;
+		import java.util.Calendar;
+		]]><![CDATA[//@DECLARATION
+				
+		User n = new User();
+		CreateAccountUserController nauc = new CreateAccountUserController();
+	
+		public void requestMove(){
+			nauc.doMoveDoc(name.getValue(),license.getValue(),spec.getValue());
+			}
+    	
+		public void clear(){
+			name.setValue("");
+			license.setValue("");
+			spec.setValue("");
+		}
+		
+		public void requestViewAppointment(){
+  			Calendar cal = Calendar.getInstance();
+			if((cal.get(Calendar.MONTH)+1) < 10){
+				if(cal.get(Calendar.DATE) < 10){
+					session.setAttribute("dateNow",cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE));
+					session.setAttribute("today",cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE));
+				}else{
+					session.setAttribute("dateNow",cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE));
+					session.setAttribute("today",cal.get(Calendar.YEAR)+"-0"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE));
+				}
+			}else{
+				if(cal.get(Calendar.DATE) < 10){
+					session.setAttribute("dateNow",cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE));
+					session.setAttribute("today",cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-0"+cal.get(Calendar.DATE));
+				}else{
+					session.setAttribute("dateNow",cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE));
+					session.setAttribute("today",cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DATE));
+				}
+			}
+			Executions.sendRedirect("appointmentView.zul");
+  		}
+		]]><![CDATA[		
+		]]></zscript>
+		
+		<menubar>
+			<menuitem label="View Profile" onClick='Executions.sendRedirect("doctor.zul")'/><menuseparator/>
+			<menuitem id="ViewAppointment" label="View Appointment" onClick="requsetViewAppointment()"/>"<menuseparator/>
+			<menuitem label="View Medical Record" onClick='Executions.sendRedirect("searchmed.zul");'/><menuseparator/>
+			<menuitem label="Edit Profile" onClick='Executions.sendRedirect("editDoctor.zul")'/><menuseparator/>
+			<menuitem label="Logout" onClick='Executions.sendRedirect("logoutView.zul")'/>
+		</menubar>
+		
+		
+		<div id="createDiv">
+			<grid>
+				<rows>
+					<row>
+						Name :
+						<textbox id="name" width="200px" value="" />
+					</row>
+					<row>
+						License :
+						<textbox id="license" width="200px" value="" />
+					</row>
+						<row>
+						Specialization :
+						<textbox id="spec" width="200px" value="" />
+					</row>
+			</rows>
+			</grid>			
+			<hbox pack="center" width="100%">
+				<button label="Create" id="Create" onClick="requestMove()"/>
+				<button label="Clear" onClick="clear()" />
+			</hbox>
+		</div>
+	</window>	
+</zk>

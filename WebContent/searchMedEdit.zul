@@ -1,0 +1,440 @@
+<?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
+<zk>
+<style src="main.css" />
+<window id="window1" border="normal" width="450px" title="Search Patient" apply="clinlink.auth.LoginController" sclass="banner">
+<div sclass="spacer"></div>
+<zscript>
+	<![CDATA[//@IMPORT
+	import clinlink.auth.*;
+	import org.zkoss.lang.Strings;
+	import java.util.ArrayList;
+	import java.util.Date;
+	import java.sql.Date;
+	import org.zkoss.zul.Timebox;
+	import org.zkoss.zul.*;
+	import java.lang.Object;
+	]]><![CDATA[//@DECLARATION
+	
+	String kat3=" ";
+    User u = new User();
+    SearchController sc2 = new SearchController();
+    Object[][] pat_id;
+    Object[][] doc_id;
+    public void goback()
+    {
+    	
+    		Executions.sendRedirect("staff.zul");
+    	
+    }
+    public void searchname()
+    {
+    	
+	    pat_id = sc2.doSearch(usertb.getValue());
+    
+    window2.removeChild(window2.getFirstChild());
+    window3.setVisible(false);
+    window2.setTitle("Search Patient Results");	
+	  
+	  Grid grid2 = new Grid();
+		Columns col2 = new Columns();
+		Rows row2 = new Rows();
+		
+		Column col22 = new Column("Patient Name");
+	
+		Column col23 = new Column("Patient ID");
+	
+		Column col124 = new Column (""); 
+		Column col125 = new Column("");
+		
+		col2.appendChild(col22);
+		col2.appendChild(col23);
+		col2.appendChild(col124);
+		col2.appendChild(col125);
+		grid2.appendChild(col2);
+		int yy=0;
+		   
+		   
+		   
+		  while(pat_id[yy][0].toString().equals("-1")== false)
+		  {		
+				int ii=0;
+				Row row22 = new Row();
+		   	for (ii=0; ii<2; ii++)
+		   	{
+		   		Label lab = new Label();
+				lab.setValue(pat_id[yy][ii].toString());
+				row22.appendChild(lab);
+			   
+		   	}
+		   	Button but = new Button(pat_id[yy][1].toString());
+		  	but.setStyle("color: white");
+		    but.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
+		    	public void onEvent(Event event) throws Exception {
+		    		 window3.removeChild(window3.getFirstChild());
+		    		 window3.setVisible(true);
+		    		 window1.setVisible(false);
+		    		 window2.setVisible(false);
+		    	SearchController sc3 = new SearchController();
+		   
+		    	String tem = but.getLabel();
+		   
+		    	    int temp2 = Integer.parseInt(tem);
+	
+		            MedicalRecord mr1=new MedicalRecord(); 
+
+		    		EditMedRecController emrc=new EditMedRecController();
+		            mr1=emrc.doSearchRecord(temp2);
+		            if (mr1.record_id!=0){
+		    	  	Grid grid2 = new Grid();
+		    		Columns col2 = new Columns();
+		    		Rows row2 = new Rows();
+		    		
+		    		Column col22 = new Column("Edit Medical Record");
+		    		Column col23 = new Column(" ");
+		    	
+
+		    		col2.appendChild(col22);
+		    		col2.appendChild(col23);
+		    		grid2.appendChild(col2);
+		    		int yy=0;
+		    		   
+		    		   
+		    		   
+		    		
+		    				Row row22 = new Row();
+		    		
+		    		   		Label lab = new Label();
+		    				lab.setValue(" Record ID: ");
+		    				Textbox record= new Textbox();
+		    				record.setValue(Integer.toString(mr1.record_id));
+		    				record.setDisabled(true);
+		    				row22.appendChild(lab);
+		    				row22.appendChild(record);
+		    				
+		    				Row row23 = new Row();
+		    				Label lab2 = new Label();
+		    				lab2.setValue(" Patient ID: ");
+		    				Textbox patient = new Textbox();
+		    				patient.setValue(Integer.toString(mr1.patient_id));
+		    				patient.setDisabled(true);
+		    				row23.appendChild(lab2);
+		    				row23.appendChild(patient);
+		    				
+		    				Row row24 = new Row();
+		    				Label lab3 = new Label();
+		    				lab3.setValue(" Doctor ID: ");
+		    				Intbox doctor = new Intbox();
+		    				doctor.setValue(mr1.doctor_id);
+		    				
+		    				Row row35 = new Row();
+		    				Button search = new Button("Search Doctor ID:");
+		    				lab3.setValue(" Doctor ID: ");
+		    				Textbox doc_name = new Textbox();
+		    				doc_name.setValue("");
+		    				search.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
+							    	public void onEvent(Event event) throws Exception {
+							    		EditMedRecController emrc3=new EditMedRecController();
+							    		window4.removeChild(window4.getFirstChild());
+							    		doc_id = emrc3.doSearchDoctor(doc_name.getValue());
+							    		window4.setVisible(true);
+							    		window4.setTitle("Search results");	
+							    		  
+							    		  Grid grid3_d = new Grid();
+							    			Columns col2_d = new Columns();
+							    			Rows row2_d = new Rows();
+							    			
+							    			Column col22_d = new Column("Doctor Name");
+
+							    			Column col23_d = new Column("Doctor ID");
+
+							    			Column col124 = new Column (""); 
+							    			Column col125 = new Column("");
+							    			
+							    			col2_d.appendChild(col22_d);
+							    			col2_d.appendChild(col23_d);
+							    			col2_d.appendChild(col124);
+							    			col2_d.appendChild(col125);
+							    			grid3_d.appendChild(col2_d);
+							    			int yyy=0;
+							    			   
+							    			   
+							    			   
+							    			  while(doc_id[yyy][0].toString().equals("-1")== false)
+							    			  {		
+							    					int ii=0;
+							    					Row row22_d = new Row();
+							    			   	for (ii=0; ii<2; ii++)
+							    			   	{
+							    			   		Label lab_d = new Label();
+							    					lab_d.setValue(doc_id[yyy][ii].toString());
+							    					row22_d.appendChild(lab_d);
+							    				   
+							    			   	}
+
+							    			   	yyy++;
+							    			   	row2_d.appendChild(row22_d);
+							    			  } 
+
+							    	
+							    			  grid3_d.appendChild(row2_d);
+							    				window4.appendChild(grid3_d);
+		    				}
+		    				
+		    				}
+		            );
+		    				
+		    				
+		    				
+		    				
+
+		    		 
+		    				//doctor.setDisabled(true);
+		    				row24.appendChild(lab3);
+		    				row24.appendChild(doctor);
+		    				//row24.appendChild(search);
+		    				row35.appendChild(search);
+		    				row35.appendChild(doc_name);
+		    				
+		    				
+		    				Row row25 = new Row();
+		    				Label lab4 = new Label();
+		    				lab4.setValue(" Date Admitted: (YYYY-MM-DD) ");
+		    				//Textbox date_admin = new Textbox();
+		    				Datebox date_admin=new Datebox();
+		    				date_admin.setFormat("yyyy-MM-dd");
+		    				date_admin.setValue(mr1.date_admin);
+		       				row25.appendChild(lab4);
+		    				row25.appendChild(date_admin);
+		    			   
+		    				Row row26 = new Row();
+		    				Label lab5 = new Label();
+		    				lab5.setValue(" Date Released: (YYYY-MM-DD)");
+		    				Datebox date_rel = new Datebox();
+		    				date_rel.setFormat("yyyy-MM-dd");
+		    				date_rel.setValue(mr1.date_rel);
+		       				row26.appendChild(lab5);
+		    				row26.appendChild(date_rel);   
+		    				
+		    				Row row27 = new Row();
+		    				Label lab6 = new Label();
+		    				lab6.setValue(" Height: ");
+		    				Textbox height = new Textbox();
+		    				height.setValue(mr1.height);
+		       				row27.appendChild(lab6);
+		    				row27.appendChild(height); 
+		    				
+		    				Row row28 = new Row();
+		    				Label lab7 = new Label();
+		    				lab7.setValue(" Weight: ");
+		    				Textbox weight = new Textbox();
+		    				weight.setValue(mr1.weight);
+		       				row28.appendChild(lab7);
+		    				row28.appendChild(weight); 
+		    				
+		    				Row row29 = new Row();
+		    				Label lab8 = new Label();
+		    				lab8.setValue(" Diagnosis: ");
+		    				Textbox diagnosis = new Textbox();
+		    				diagnosis.setValue(mr1.diagnosis);
+		       				row29.appendChild(lab8);
+		    				row29.appendChild(diagnosis);
+		    				
+		    				Row row30 = new Row();
+		    				Label lab9 = new Label();
+		    				lab9.setValue(" Age: ");
+		    				Intbox age = new Intbox();
+		    				age.setValue(mr1.age);
+		       				row30.appendChild(lab9);
+		    				row30.appendChild(age);   
+		    				
+		    				Row row31 = new Row();
+		    				Label lab10 = new Label();
+		    				lab10.setValue(" Class Name: ");
+		    				Textbox classname = new Textbox();
+		    				classname.setValue(mr1.classname);
+		       				row31.appendChild(lab10);
+		    				row31.appendChild(classname);   
+		    				
+		    				Row row32 = new Row();
+		    				Label lab11 = new Label();
+		    				lab11.setValue(" Date of Birth: (YYYY-MM-DD)");
+		    				Datebox bday = new Datebox();
+		    				bday.setFormat("yyyy-MM-dd");
+		    				bday.setValue(mr1.bday);
+		       				row32.appendChild(lab11);
+		    				row32.appendChild(bday);   
+		    				
+		    				Row row33 = new Row();
+		    				Label lab12 = new Label();
+		    				lab12.setValue(" Time Admitted: (HH:MM:SS) ");
+		    				Textbox time_adm = new Textbox();
+		    				time_adm.setValue(mr1.time_adm);
+		       				row33.appendChild(lab12);
+		    				row33.appendChild(time_adm);   
+		    				
+		    				Row row34 = new Row();
+		    				Label lab13 = new Label();
+		    				lab13.setValue(" Discharge Time: (HH:MM:SS)");
+		    				Textbox discharge_time = new Textbox();
+		    				//discharge_time.setFormat(HH:mm);
+		    				discharge_time.setValue(mr1.discharge_time);
+		       				row34.appendChild(lab13);
+		    				row34.appendChild(discharge_time);   
+		    				
+//append rows		
+		    		   	row2.appendChild(row22);
+		    		   	row2.appendChild(row23);
+		    		   	row2.appendChild(row24);
+		    		   	row2.appendChild(row35); 
+		    		   	row2.appendChild(row25);
+		    		   	row2.appendChild(row26);
+			    		row2.appendChild(row27);
+			    		row2.appendChild(row28);
+			    		row2.appendChild(row29);
+			    		row2.appendChild(row30);
+			    		row2.appendChild(row31);
+			    		row2.appendChild(row32);
+			    		row2.appendChild(row33);
+			    		row2.appendChild(row34);
+			    		Button update = new Button("Update Patient Record");
+		
+					    update.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
+					    	public void onEvent(Event event) throws Exception {
+					    		EditMedRecController emrc2=new EditMedRecController();
+					    		//int status;
+					    		int rec_id;
+					     		  int pat_id;
+					     		  int doct_id;
+					     		  String height1="";
+					     		  String weight1="";
+					     		  String diagnosis1="";
+					     		  String classname1="";
+					     		  String date_adm1="";
+					     		  String date_rel1="";
+					     		  String classname1="";
+					     		  String time_adm1="";
+					     		  String discharge_time1="";
+					     		 
+					     		  int age1;
+					   		     rec_id=Integer.parseInt(record.getValue());
+					   		     pat_id=Integer.parseInt(patient.getValue());
+					    		 doct_id=doctor.getValue();
+					    		 height1=height.getValue();
+					    		 weight1=weight.getValue();
+					    		 classname1=classname.getValue();
+					    		  utilDate = date_admin.getValue();
+					    		  sqlDate = new Date(utilDate.getTime());
+					    	     mr1.date_admin=sqlDate;
+								  utilDate1 = date_rel.getValue();
+					    		  sqlDate1 = new Date(utilDate1.getTime());
+					    	     mr1.date_rel=sqlDate1;
+
+					    	     utilDate2 = bday.getValue();
+					    		  sqlDate2 = new Date(utilDate2.getTime());
+					    	     mr1.bday=sqlDate2;
+
+					    		 time_adm1=time_adm.getValue();
+					    		 discharge_time1=discharge_time.getValue();
+					    		 
+					     		 diagnosis1=diagnosis.getValue();
+						 		 age1=age.getValue();
+					    	   
+					    	   int stat=emrc2.doUpdateRecord(rec_id,pat_id,doct_id,height1,weight1,diagnosis1,age1,classname1,mr1.date_admin, mr1.date_rel,time_adm1, discharge_time1, mr1.bday );
+					    	   if (stat==1)
+					    	   alert("Edit Successful!");
+					    	   else if (stat==2)
+					    		   alert("Doctor ID does not exist!");
+					    	   else alert("Failed to Edit Record! Please check your inputs.");
+					    	   
+					    	}});
+					    		
+					    Button back = new Button("Go Back");
+
+					    back.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
+					    	public void onEvent(Event event) throws Exception {
+					    	Executions.sendRedirect("searchMedEdit.zul");
+					    	} });
+			    		
+			    		
+			    		
+			    		window3.appendChild(grid2);
+			    		window3.appendChild(update);
+			    		window3.appendChild(back);
+			    		grid2.appendChild(row2);
+			    		
+		    		
+		    	}
+		            else{
+		            	alert("No medical record found for patient");
+		                Executions.sendRedirect("SearchMedEdit.zul");}
+		    	} 
+		    	}); 
+		   	row22.appendChild(but);
+		   	Label lab2 = new Label();
+			lab2.setValue("click to Edit");
+			row22.appendChild(lab2);
+		   	yy++;
+		   	row2.appendChild(row22);
+		  }
+		  
+		
+		grid2.appendChild(row2);
+		window2.appendChild(grid2);
+		
+	
+    }
+    
+	public void clear()
+	{
+		usertb.setValue("");
+	}
+	
+
+	
+	]]><![CDATA[
+
+]]></zscript>
+
+<menubar>
+	<menuitem label="View Profile" onClick="goback()"/><menuseparator/>
+	<menuitem id="ViewAppointment" label="Manage Appointment" href="doctorView.zul"/><menuseparator/>
+	<menuitem label="View Medical Record" onClick='Executions.sendRedirect("searchmed.zul")'/><menuseparator/>
+	<menuitem id="edit" label="Edit Profile" onClick='Executions.sendRedirect("editStaff.zul")'/><menuseparator/>
+	<menuitem id="create" label="Create User" onClick='Executions.sendRedirect("createAccount.zul")'/><menuseparator/>
+	<menuitem label="Logout" onClick='Executions.sendRedirect("logoutView.zul")'/>
+</menubar>
+
+<div id="loginDiv">
+<grid>
+	<rows>
+		<row>
+			Patient's Name :
+			<textbox id="usertb" width="230px" value="" />
+		</row>
+	</rows>
+</grid>
+
+<hbox pack="center" width="100%">
+	<button label="Search" id="Search" onClick="searchname()"/>
+	<button label="Clear"  onClick="clear()"/>
+	<button label="Go Back" onClick="goback()"/>
+</hbox>
+
+</div>
+
+</window>
+<space /><space /><space />
+<window id="window2">
+<div id="div2"></div>
+</window>
+<space /> <space /> <space />
+<window id="window4">
+<div id="div4" visible="false"></div>
+</window>
+<space /> <space /> <space />
+<window id="window3">
+<div id="div3" visible="false">
+</div>
+</window>
+</zk>
+
