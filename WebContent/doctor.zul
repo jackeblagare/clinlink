@@ -1,9 +1,8 @@
 <?page title="Doctor" contentType="text/html;charset=UTF-8"?>
 <zk>
 <style src="main.css" />
-<window id ="ppro" title="Profile" border="normal" onCreate=" requestViewProfile()" sclass="banner">
-<div sclass="spacer">
-</div>
+<div sclass="spacer"></div>
+<window id ="ppro" title="Profile" border="normal" onCreate=" requestViewProfile()">
 <zscript>
 <![CDATA[//@IMPORT
         import clinlink.ViewProfile.*;
@@ -81,7 +80,7 @@
 	<menuitem id="ViewAppointment" label="View Appointment" onClick=""/><menuseparator/>
 	<menuitem label="View Medical Record" onClick="viewmed()"/><menuseparator/>
 	<menuitem label="Edit Profile" onClick='Executions.sendRedirect("editDoctor.zul")'/><menuseparator/>
-	<menuitem label="Create User" onClick='Executions.sendRedirect("createAcount.zul")'/><menuseparator/>
+	<menuitem label="Create User" onClick='Executions.sendRedirect("createAccount.zul")'/><menuseparator/>
 	<menuitem label="Logout" onClick='Executions.sendRedirect("logoutView.zul")'/>
 </menubar>
 
@@ -111,4 +110,5 @@ Specialization :
 </groupbox>
 </div>
 </window>
+<label sclass="footer">ClinLink is a portal for doctors and patients to access information on personalized care</label>
 </zk>

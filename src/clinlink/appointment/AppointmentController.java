@@ -29,7 +29,7 @@ public class AppointmentController extends GenericForwardComposer{
 		return app.deleteAppointment(appID);
 	}
 	public boolean isValid(String patname, int selected, String d_id, String date, String time, String reason){
-		if(selected != -1){
+		if((selected != -1)||(patname!=null)){
 			if((patname!=null)&&(d_id!=null)&&(date!=null)&&(time!=null)&&(reason!=null)&&(patname!="")&&(d_id!="")&&(date!="")&&(time!="")){
 				return true;
 			}

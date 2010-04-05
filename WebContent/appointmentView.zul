@@ -222,7 +222,7 @@
 								
 							}
 							else{
-								lb.setStyle("color:blue");
+								lb.setSclass("link");
 								lb.setValue("[cancel]");
 								lb.setId(a.appID.get(q).toString());
 								addDel(lb);
@@ -234,7 +234,7 @@
 						
 					}
 					else{
-						lb.setStyle("color:blue");
+						lb.setSclass("link");
 						lb.setValue("[cancel]");
 						lb.setId(a.appID.get(q).toString());
 						addDel(lb);
@@ -343,7 +343,7 @@
 				la.setValue("make");
 				int type = Integer.parseInt(session.getAttribute("usertype").toString());
 				if((type==3)||((a.appDate.size()>0) && (a.appDate.contains(comp[k-1])==false))){
-				la.setStyle("color:blue");
+				la.setSclass("link");
 				if(session.getAttribute("usertype") != null){
 						if(type != 2){
 							if((type == 4) && (session.getAttribute("userid") != null)){
@@ -378,6 +378,9 @@
 			c1.setAutocomplete(true);
 			Checkbox check = new Checkbox("Patient has no account yet.");
 			check.setId("mych");
+			if(q.length == 4){
+				check.setVisible(false);
+			}else{
 			check.addEventListener("onCheck", new org.zkoss.zk.ui.event.EventListener(){
 				public void onEvent(Event event) throws Exception{
 					try{
@@ -394,7 +397,7 @@
 					}
 				}
 			});
-			
+			}
 			Button b1= new Button("Add"); Button b2 = new Button("Cancel");
 			b1.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener(){
 				public void onEvent(Event event) throws Exception {
@@ -469,11 +472,11 @@
 	]]>
 </zscript>
 
-<separator />
-<div sclass="banner">
+<space/>
 <div sclass="spacer"></div>
 <menubar id="mb">
-	<menuitem label="Profile" onClick="viewProfile()"/>
+	<menuitem label="View Profile" onClick="viewProfile()"/>
+	<menuseparator />
 	<menuitem label="Logout" onClick='session.invalidate(); Executions.sendRedirect("/")'/>
 </menubar>
 <div id="make" visible="false">
@@ -542,5 +545,5 @@ else{viewProfile();}'>
 <button id="prev2" label="prev"/>
 <button id="next2" label="next"/>	
 </div>
-</div>
+<label sclass="footer">ClinLink is a portal for doctors and patients to access information on personalized care</label>
 </zk>

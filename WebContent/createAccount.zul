@@ -1,8 +1,10 @@
 <?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
 <zk>
-<style src="main.css" />	
-	<window border="normal" title="Create" apply="clinlink.cauc.CreateAccountUserController" sclass="banner">
-	<div sclass="spacer"></div>
+<style src="main.css" />
+<space/>
+<div sclass="spacer"></div>	
+	<window border="normal" title="Create" apply="clinlink.cauc.CreateAccountUserController">
+	
 		<zscript>
 		<![CDATA[//@IMPORT
 		import clinlink.cauc.*;
@@ -31,21 +33,25 @@
 			bd.setValue("");
 		}	
 	
-		
+		public void viewProfile(){
+			int id;
+			if(session.getAttribute("usertype") != null){
+				id = Integer.parseInt(session.getAttribute("usertype").toString());
+				if(id == 1) Executions.sendRedirect("admin.zul");
+				else if(id == 2) Executions.sendRedirect("doctor.zul");
+				else if(id == 3) Executions.sendRedirect("staff.zul");
+				else if(id == 4) Executions.sendRedirect("patient.zul");
+				else Executions.sendRedirect("logoutView.zul");
+			}else Executions.sendRedirect("logoutView.zul");
+		}
 		]]><![CDATA[
 		
 		]]></zscript>
 		
 		
 <menubar>
-<!--	<menuitem label="View Profile" onClick='Executions.sendRedirect("admin.zul")'/>-->
-<!--	<menuseparator />-->
-<!--	<menuitem label="View medical records" onClick="goback2()" />-->
-<!--	<menuseparator />-->
-<!--	<menuitem id="approve" label="approve request" onClick='Executions.sendRedirect("approve.zul")'/>-->
-<!--	<menuseparator />-->
-<!--	<menuitem id="delete" label="Delete User" onClick='Executions.sendRedirect("deleteAccountUser.zul")'/>-->
-<!--	<menuseparator />-->
+	<menuitem label="View Profile" onClick="viewProfile()"/>
+	<menuseparator />
 	<menuitem id="Logout" label="Logout" onClick='Executions.sendRedirect("logoutView.zul")'/>
 </menubar>
 <space/>
@@ -86,5 +92,6 @@
 				<button label="Clear" onClick="clear()" />
 			</hbox>
 		</div>
-	</window>	
+	</window>
+	<label sclass="footer">ClinLink is a portal for doctors and patients to access information on personalized care</label>	
 </zk>

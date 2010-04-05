@@ -1,9 +1,8 @@
 <?page title="new page title" contentType="text/html;charset=UTF-8"?>
 <zk>
 <style src="main.css" />
-<window id ="ppro" title="Profile" border="normal" onCreate="requestViewProfile()" sclass="banner">
-<div sclass="spacer">
-</div>
+<div sclass="spacer"></div>
+<window id ="ppro" title="Profile" border="normal" onCreate="requestViewProfile()">
 <zscript>
 <![CDATA[//@IMPORT
         import clinlink.ViewProfile.*;
@@ -88,4 +87,5 @@ Position :
 </groupbox>
 </div>
 </window>
+<label sclass="footer">ClinLink is a portal for doctors and patients to access information on personalized care</label>
 </zk>

@@ -15,7 +15,6 @@ public void hoi2()
 	pat_id =  sc2.pat_id;
 	
 	
-	System.out.println("asa print.zul na ko hoi! " + sc2.pat_id[0][0].toString());
 	Grid grid2 = new Grid();
 	Columns col2 = new Columns();
 	Rows row2 = new Rows();
@@ -47,7 +46,8 @@ public void hoi2()
 }
 ]]>
 </zscript>
-<window id="window2" onCreate="hoi2()" sclass="banner">
 <div sclass="spacer"></div>
+<window id="window2" onCreate="hoi2()">
 </window>
+<label sclass="footer">ClinLink is a portal for doctors and patients to access information on personalized care</label>
 </zk>

@@ -1,8 +1,8 @@
 <?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
 <zk>
 <style src="main.css" />
-<window id="window1" border="normal" width="450px" title="Search Patient" apply="clinlink.auth.LoginController" sclass="banner">
 <div sclass="spacer"></div>
+<window id="window1" border="normal" width="450px" title="Search Patient" apply="clinlink.auth.LoginController">
 <zscript>
 	<![CDATA[//@IMPORT
 	import clinlink.auth.*;
@@ -436,5 +436,6 @@
 <div id="div3" visible="false">
 </div>
 </window>
+<label sclass="footer">ClinLink is a portal for doctors and patients to access information on personalized care</label>
 </zk>
 
