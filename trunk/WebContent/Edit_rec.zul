@@ -1,8 +1,9 @@
 <?page title="edit_record" contentType="text/html;charset=UTF-8"?>
 <zk>
 <style src="main.css" />
-	<window id ="ppro" title="Profile" border="normal" slass="banner">
-	<div sclass="spacer"></div><zscript>
+<div sclass="spacer"></div>
+	<window id ="ppro" title="Profile" border="normal">
+	<zscript>
 <![CDATA[//@IMPORT
         import clinlink.ViewProfile.*;
 	import clinlink.EditMedRecord.*;
@@ -103,4 +104,5 @@
 	</groupbox>
 
 </window>
+<label sclass="footer">ClinLink is a portal for doctors and patients to access information on personalized care</label>
 </zk>

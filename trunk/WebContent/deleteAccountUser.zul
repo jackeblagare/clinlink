@@ -101,16 +101,16 @@
 </zscript>
 <separator/>
 
-<div id="delete" onCreate="requestDeleteAccount()" sclass="banner">
 <div sclass="spacer"></div>
+<div id="delete" onCreate="requestDeleteAccount()">
 <menubar>
 	<menuitem label="View Profile" onClick='Executions.sendRedirect("admin.zul")'/>
 	<menuseparator />
-	<menuitem label="View medical records" onClick="goback2()" />
+	<menuitem label="View Medical Records" onClick="goback2()" />
 	<menuseparator />
-	<menuitem id="approve" label="approve request" onClick='Executions.sendRedirect("approve.zul")'/>
+	<menuitem id="approve" label="Approve Request" onClick='Executions.sendRedirect("approve.zul")'/>
 	<menuseparator />
-	<menuitem id="create" label="create user" onClick='Executions.sendRedirect("createAccount.zul")'/>
+	<menuitem id="create" label="Create User" onClick='Executions.sendRedirect("createAccount.zul")'/>
 	<menuseparator />
 	<menuitem id="Logout" label="Logout" onClick='Executions.sendRedirect("logoutView.zul")'/>
 </menubar>
@@ -200,4 +200,5 @@
 			</hbox>
 
 </div>
+<label sclass="footer">ClinLink is a portal for doctors and patients to access information on personalized care</label>
 </zk>

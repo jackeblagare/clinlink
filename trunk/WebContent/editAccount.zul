@@ -1,8 +1,8 @@
 <?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
 <zk>
-<style src="main.css" />	
-	<window border="normal" width="350px" title="Create" apply="clinlink.cauc.CreateAccountUserController" sclass="banner">
-	<div sclass="spacer"></div>
+<style src="main.css" />
+<div sclass="spacer"></div>
+	<window border="normal" width="350px" title="Create" apply="clinlink.cauc.CreateAccountUserController">
 		<zscript>
 		<![CDATA[//@IMPORT
 		import clinlink.cauc.*;
@@ -61,5 +61,6 @@
 				<button label="Clear" onClick="clear()" />
 			</hbox>
 		</div>
-	</window>	
+	</window>
+	<label sclass="footer">ClinLink is a portal for doctors and patients to access information on personalized care</label>	
 </zk>

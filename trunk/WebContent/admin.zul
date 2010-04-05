@@ -1,9 +1,9 @@
 <?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
 <zk>
 <style src="main.css" />
-<window id ="ppro" border="normal" title=" " sclass="banner">
-<div sclass="spacer">
-</div>
+<div sclass="spacer"></div>
+<separator/>
+<div id ="ppro">
 <zscript>
 	<![CDATA[//@IMPORT
 	import clinlink.auth.*;
@@ -37,9 +37,9 @@
 ]]></zscript>
 
 <menubar>
-	<menuitem label="View medical records" onClick="goback2()" />
+	<menuitem label="View Medical Records" onClick="goback2()" />
 	<menuseparator />
-	<menuitem label="approve requests" onClick="approve()" />
+	<menuitem label="Approve Requests" onClick="approve()" />
 	<menuseparator />
 	<menuitem id="create" label="Create User" onClick='Executions.sendRedirect("createAccount.zul")'/>
 	<menuseparator />
@@ -48,8 +48,8 @@
 	<menuitem id="Logout" label="Logout" onClick='Executions.sendRedirect("logoutView.zul")'/>
 </menubar>
 
-a portal for doctors and patients to access information on personalized care
+<label sclass="footer">ClinLink is a portal for doctors and patients to access information on personalized care</label>
 
-</window>
+</div>
 </zk>
 

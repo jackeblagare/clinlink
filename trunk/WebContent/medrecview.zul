@@ -1,8 +1,8 @@
 <?page title="new page title" contentType="text/html;charset=UTF-8"?>
 <zk>
 <style src="main.css" />
-<window title="new page title" border="normal" id="window2" width="2500px" sclass="banner">
 <div sclass="spacer"></div>
+<window title="new page title" border="normal" id="window2" width="2500px">
 <zscript>
 	<![CDATA[//@IMPORT
 	import clinlink.auth.*;
@@ -108,4 +108,5 @@
 </div>
 <button label="go back" href="patient.zul" />
 </window>
+<label sclass="footer">ClinLink is a portal for doctors and patients to access information on personalized care</label>
 </zk>

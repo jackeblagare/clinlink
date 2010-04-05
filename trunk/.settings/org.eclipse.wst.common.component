@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="ClinLink">
+    <wb-module deploy-name="clinlink">
         <wb-resource deploy-path="/" source-path="/WebContent"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <property name="context-root" value="ClinLink"/>
+        <property name="context-root" value="clinlink"/>
         <property name="java-output-path"/>
     </wb-module>
 </project-modules>

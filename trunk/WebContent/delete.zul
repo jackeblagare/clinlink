@@ -1,8 +1,8 @@
 <?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
 <zk>
 <style src="main.css" />
-<window id="window1" border="normal" width="450px" apply="clinlink.auth.ApproveController" sclass="banner">
 <div sclass="spacer"></div>
+<window id="window1" border="normal" width="450px" apply="clinlink.auth.ApproveController">
 <zscript>
 	<![CDATA[//@IMPORT
 	import clinlink.deleteAccount.*;
@@ -121,5 +121,6 @@
 <window id="window2">
 <div id="div2"></div>
 </window>
+<label sclass="footer">ClinLink is a portal for doctors and patients to access information on personalized care</label>
 </zk>
 

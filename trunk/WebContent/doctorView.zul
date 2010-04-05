@@ -1,6 +1,6 @@
 <?page title="Doctor List" contentType="text/html;charset=UTF-8"?>
 <zk>
-<style src="main.css" />
+<style src="main.css"/>
 <zscript>
 		<![CDATA[
 		import clinlink.appointment.AppointmentController;
@@ -43,7 +43,7 @@
 				Label l2 = new Label();
 				l1.setValue(dm.specialization.get(i));
 				l2.setValue(dm.doctors.get(i));
-				l2.setStyle("color: blue");
+				l2.setSclass("link");
 				addListener(l2);
 				r1.appendChild(l1);
 				r1.appendChild(l2);
@@ -97,10 +97,10 @@
 
 <separator/>
 
-<div id="win" onCreate="requestViewDoctors()" sclass="banner">
+<div id="win" onCreate="requestViewDoctors()">
 <div sclass="spacer"></div>
 <menubar>
-	<menuitem label="Profile" onClick="viewProfile()"/>
+	<menuitem label="Profile" onClick="viewProfile()"/><menuseparator />
 	<menuitem label="Logout" onClick='session.invalidate(); Executions.sendRedirect("/")'/>
 </menubar>
 <separator/>
@@ -113,5 +113,5 @@
 		</rows>
 	</grid>
 </div>
-
+<label sclass="footer">ClinLink is a portal for doctors and patients to access information on personalized care</label>
 </zk>

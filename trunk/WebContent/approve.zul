@@ -1,8 +1,10 @@
 <?page title="ClinLink" contentType="text/html;charset=UTF-8"?>
 <zk>
 <style src="main.css" />
-<window id="window1" border="normal" apply="clinlink.auth.ApproveController" sclass="banner">
+<space/>
 <div sclass="spacer"></div>
+<window id="window1" border="normal" apply="clinlink.auth.ApproveController">
+
 <zscript>
 	<![CDATA[//@IMPORT
 	import clinlink.auth.*;
@@ -36,12 +38,11 @@
     {
     	if (count>1)
 	    {
-	    	window1.removeChild(window1.getFirstChild());
+	    	//window1.removeChild(window1.getFirstChild());
 	    	if (window1.getLastChild()!=null)
 	    		window1.removeChild(window1.getLastChild());
 	    }
 
-    	window1.removeChild(window2.getFirstChild());
     	window1.setTitle("Approve");	
 	  
 	  	Grid grid2 = new Grid();
@@ -139,7 +140,7 @@
 <menubar>
 	<menuitem label="View Profile" onClick='Executions.sendRedirect("admin.zul")'/>
 	<menuseparator />
-	<menuitem label="View medical records" onClick="goback2()" />
+	<menuitem label="View Medical Records" onClick="goback2()" />
 	<menuseparator />
 	<menuitem id="create" label="Create User" onClick='Executions.sendRedirect("createAccount.zul")'/>
 	<menuseparator />
@@ -151,9 +152,6 @@
 <div id="loginDiv" onCreate="approve()">
 </div>
 </window>
-<space /><space /><space />
-<window id="window2">
-<div id="div2"></div>
-</window>
+<label sclass="footer">ClinLink is a portal for doctors and patients to access information on personalized care</label>
 </zk>
 

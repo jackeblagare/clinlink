@@ -1,8 +1,9 @@
 <?page title="new page title" contentType="text/html;charset=UTF-8"?>
 <zk>
 <style src="main.css" />
-<window id ="ppro" title="Profile" border="normal" onCreate="requestEditProfile()" sclass="banner">
-<div sclass="spacer"></div><zscript>
+<div sclass="spacer"></div>
+<window id ="ppro" title="Profile" border="normal" onCreate="requestEditProfile()">
+<zscript>
 <![CDATA[//@IMPORT
         import clinlink.EditProfile.*;
  		import org.zkoss.lang.Strings;
@@ -30,7 +31,6 @@
   			int user_id=Integer.parseInt(patientId.getValue());
 			this.patient_id=user_id;
 			i=vpc.doViewProfile(kat);
-			System.out.println(kat);	
 			patientId.setValue(Integer.toString(i.id));
 			id=kat;
 			i=vpc.doEditProfile(name.getValue(),sex.getValue(),contact.getValue(),id);	
@@ -74,4 +74,5 @@ Contact :
 
 
 </window>
+<label sclass="footer">ClinLink is a portal for doctors and patients to access information on personalized care</label>
 </zk>
