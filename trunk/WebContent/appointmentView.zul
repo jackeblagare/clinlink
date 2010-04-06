@@ -426,7 +426,7 @@
 			b2.setHref("appointmentView.zul"); h1.appendChild(b1); h1.appendChild(b2);
 			if(q.length == 4){
 				c1.setText(PatientController.getPatientName(pm, Integer.parseInt(q[3])));
-				c1.setReadonly(true);
+				c1.setDisabled(true);
 			}else{
 				PatientController.getPatientNames(pm);
 				Object[] names = pm.patients.toArray();
